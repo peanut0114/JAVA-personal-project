@@ -30,7 +30,7 @@ public class Table {
     
 	CREATE TABLE members (
 	member_id VARCHAR2(20) constraint member_id_pk primary key,
-	member_pwd varchar2(100) constraint member_pwd_nn NOT NULL,
+	member_pwd varchar2(30) constraint member_pwd_nn NOT NULL,
 	member_name varchar2(100) constraint member_name_nn NOT NULL,
 	member_birth date,
 	member_phone varchar2(20),
@@ -50,6 +50,17 @@ public class Table {
 	board_subject VARCHAR(200), 
 	board_content VARCHAR2(1000), 
 	board_category NUMBER(1));
+	
+	
+	* 댓글 테이블
+	
+	CREATE TABLE comments(
+	comment_b_num NUMBER CONSTRAINT comm_bnum_fk
+                        REFERENCES board(board_num), --게시판 번호 참조
+	comment_m_id VARCHAR2(20) CONSTRAINT comm_mid_fk
+                        REFERENCES members(member_id), --회원 아이디 참조
+	comment_content VARCHAR2(500));
+	
 	
 	<SEQUENCE>
 	CREATE SEQUENCE product_seq 
