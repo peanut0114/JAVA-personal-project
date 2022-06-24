@@ -26,7 +26,7 @@ public class SignUp {
 		member.setMemberPwd(sc.nextLine());
 		System.out.print("이름 > ");
 		member.setMemberName(sc.nextLine());
-		System.out.print("입사일(YYYY-MM-DD)>>");
+		System.out.print("생년월일(YYYY-MM-DD)>>");
 		member.setMemberBirth(Date.valueOf(sc.nextLine()));
 		System.out.print("연락처 > ");
 		member.setMemberPhone(sc.nextLine());

@@ -10,8 +10,10 @@ public class Table {
 	product_id NUMBER constraint product_id_pk primary key,
 	product_name VARCHAR2(100) constraint product_name_nn NOT NULL,
 	product_price number constraint product_price_nn NOT NULL,
-	product_explain VARCHAR2(1000);
+	product_explain VARCHAR2(1000));
 
+	insert into products values (500,	'피넛쿠키',	3200,	'고소한 땅콩을 갈아넣어 만든 쿠키');
+	insert into products values (501,	'화이트마카다미아쿠키',	3800,	'은경언니가 추천하는 최애쿠키 츄라이츄라이');
 
     * 주문 테이블
     
@@ -45,11 +47,16 @@ public class Table {
 	* 게시판 테이블
 	
 	CREATE TABLE board(
-	board_num NUMBER constraint bord_num_pk primary key, 
+	board_num NUMBER constraint bord_num_pk primary key,
+	board_product number constraint b_product_fk 
+						REFERENCES products(product_id),
+	board_m_id VARCHAR2(20) CONSTRAINT board_m_id_fk
+                             REFERENCES members(member_id),
+    board_pwd VARCHAR2(20),
 	board_star NUMBER(1),	--평가별점(5점만점)
 	board_subject VARCHAR(200), 
 	board_content VARCHAR2(1000), 
-	board_category NUMBER(1));
+	board_category NUMBER(1)); --0 공지, 1후기
 	
 	
 	* 댓글 테이블
@@ -59,7 +66,8 @@ public class Table {
                         REFERENCES board(board_num), --게시판 번호 참조
 	comment_m_id VARCHAR2(20) CONSTRAINT comm_mid_fk
                         REFERENCES members(member_id), --회원 아이디 참조
-	comment_content VARCHAR2(500));
+	comment_content VARCHAR2(500),
+	comment_date DATE default sysdate);
 	
 	
 	<SEQUENCE>

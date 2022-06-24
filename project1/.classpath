@@ -6,12 +6,12 @@
 			<attribute name="module" value="true"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="C:/dev/eclipse/lombok-1.18.24.jar">
+	<classpathentry kind="lib" path="D:/dev/eclipse/lombok-1.18.24.jar">
 		<attributes>
 			<attribute name="module" value="true"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="C:/dev/eclipse/ojdbc6_g.jar">
+	<classpathentry kind="lib" path="D:/dev/eclipse/ojdbc6_g.jar">
 		<attributes>
 			<attribute name="module" value="true"/>
 		</attributes>

@@ -7,7 +7,12 @@ import lombok.Setter;
 @Setter
 public class Board {
 	private int boardNum;
+	private int productId;
+	private String productName;
+	private String boardMId;
+	private String boardPwd;
 	private int boardStar; // 평가별점 5점만점
+	private String star;
 	private String boardSubject; // 제목
 	private String boardContent; // 내용
 	private int boardCategory; // 0:공지게시판, 1:후기게시판
@@ -16,12 +21,12 @@ public class Board {
 	public String toString() {
 		String str = "";
 		if (boardCategory==1) {
-			str = boardNum + ". " + boardSubject 
-				+ " 평점 : " + boardStar + "/5\n" 
-				+ "내용 : " + boardContent;
+			str = boardNum + ". 제품명 : "+productName+" (평점 " + boardStar + "/5)\n"
+					+"   제목 : " + boardSubject + " 작성자: "+boardMId
+					+"\n   내용 : " + boardContent;
 		} else {
 			str = boardNum + ". " + boardSubject 
-					+ "내용 : " + boardContent;
+					+ "\\n   내용 : " + boardContent;
 		}
 		return str;
 	}

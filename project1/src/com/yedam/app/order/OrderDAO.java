@@ -125,4 +125,37 @@ public class OrderDAO extends DAO{
 		}
 		return list;
 	}
+	
+	// 전체조회 - 회원아이디, 상품번호 이용
+		public List<OrderInfo> selectAll(String memberId, int productId) {
+			List<OrderInfo> list = new ArrayList<>();
+
+			try {
+				connect();
+				String sql = "SELECT o.deal_date, o.product_id" 
+								+ ", p.product_name, o.orderer_id, o.deal_amount "
+							+ "FROM products p JOIN orders o " 
+							+ "ON p.product_id = o.product_id "
+							+ "WHERE o.orderer_id = ? "
+							+ "AND o.product_id = ? ";
+				pstmt = conn.prepareStatement(sql);
+				pstmt.setString(1,memberId);
+				pstmt.setInt(2, productId);
+				rs = pstmt.executeQuery();
+				while (rs.next()) {
+					OrderInfo info = new OrderInfo();
+					info.setDealDate(rs.getDate("deal_date"));
+					info.setProductId(rs.getInt("product_id"));
+					info.setProductName(rs.getString("product_name"));
+					info.setDealAmount(rs.getInt("deal_amount"));
+					info.setOrdererId(rs.getString("orderer_id"));
+					list.add(info);
+				}
+			} catch (SQLException e) {
+				e.printStackTrace();
+			} finally {
+				disconnect();
+			}
+			return list;
+		}
 }

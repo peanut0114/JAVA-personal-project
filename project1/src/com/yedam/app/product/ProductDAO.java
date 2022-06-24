@@ -51,8 +51,7 @@ public class ProductDAO extends DAO {
 		try {
 			connect();
 
-			String sql = "UPDATE products " 
-					+ "SET product_name=?, product_price=?, product_explain =? " 
+			String sql = "UPDATE products " + "SET product_name=?, product_price=?, product_explain =? "
 					+ "WHERE product_id=?";
 			// 둘 다 값을 넣어야하기 때문에 바꾸지 않는다면 원래 값을 그대로 반환하도록 짤 것
 
@@ -61,7 +60,6 @@ public class ProductDAO extends DAO {
 			pstmt.setInt(2, product.getProductPrice());
 			pstmt.setString(3, product.getProductExplain());
 			pstmt.setInt(4, product.getProductId());
-			
 
 			int result = pstmt.executeUpdate();
 			if (result > 0) {
@@ -95,7 +93,7 @@ public class ProductDAO extends DAO {
 		}
 	}
 
-	// 단건조회 - 재고이름
+	// 단건조회 - 싱품이름
 	public Product selectOne(String productName) {
 		Product product = null;
 		try {
@@ -112,7 +110,7 @@ public class ProductDAO extends DAO {
 				product.setProductName(rs.getString("product_name"));
 				product.setProductPrice(rs.getInt("product_price"));
 				product.setProductExplain(rs.getString("product_explain"));
-
+			}
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
@@ -120,8 +118,9 @@ public class ProductDAO extends DAO {
 		}
 		return product;
 	}
+		
 
-	// 단건조회 - 재고이름
+	// 단건조회 - 상품번호
 	public Product selectOne(int productId) {
 		Product product = null;
 		try {
@@ -168,7 +167,7 @@ public class ProductDAO extends DAO {
 				product.setProductPrice(rs.getInt("product_price"));
 				product.setProductExplain(rs.getString("product_explain"));
 
-				list.add(product); 
+				list.add(product);
 			}
 
 		} catch (SQLException e) {

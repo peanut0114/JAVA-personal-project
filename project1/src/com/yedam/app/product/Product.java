@@ -14,9 +14,8 @@ public class Product {
 	
 	@Override
 	public String toString() {
-		return "제품번호 : " + productId 
-				+ ", 제품명 : " + productName 
-				+ ", 가격 : " + productPrice;
+		return productId +". " + productName+" (" + productPrice
+				+"원)\n   ★★"+productExplain+"★★";
 	}
 
 

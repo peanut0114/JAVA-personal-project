@@ -2,7 +2,7 @@ package com.yedam.app.common;
 
 import java.util.Scanner;
 
-import com.yedam.app.manager.MamgerMangement;
+import com.yedam.app.manager.ManagerPage;
 import com.yedam.app.member.Member;
 import com.yedam.app.member.MemberDAO;
 import com.yedam.app.member.SignUp;
@@ -25,12 +25,14 @@ public class LoginControl extends Management{
 				if(menuNo==1) {
 					//로그인
 					login();
+					//성공할 경우 프로그램 실행
+					if(checkLogin()) break;
 				}else if(menuNo==2) {
 					//회원가입
 					new SignUp();
 				}else if(menuNo==9) {
 					//종료
-					break;
+					new Management().run();
 				}else {
 					showInputError();
 				}
@@ -50,23 +52,14 @@ public class LoginControl extends Management{
 		private void login() {
 			//아이디와 비밀번호 입력
 			Member inputInfo = inputMember();
-			
 			//로그인 시도
 			loginInfo = MemberDAO.getInstance().selectOne(inputInfo);	
-			
 			//실패할 경우 그대로 종료
 			if(loginInfo ==null) {
 				System.out.println();
 				return;
 			}
-			
-			//성공할 경우 프로그램 실행
-			System.out.println("-로그인 성공-\n");
-			if(inputInfo.getMemberRole()==0) {
-				new MamgerMangement();
-			}else {
-				new MypageMangement();	//회원 : 마이페이지 
-			}
+			System.out.println("-로그인 성공-");
 		}
 		
 
