@@ -1,8 +1,12 @@
 package com.yedam.app.common;
 
+import java.util.List;
 import java.util.Scanner;
 
+import com.yedam.app.board.Board;
 import com.yedam.app.board.BoardDAO;
+import com.yedam.app.board.NoticeManagement;
+import com.yedam.app.comment.Comment;
 import com.yedam.app.comment.CommentDAO;
 import com.yedam.app.manager.ManagerPage;
 import com.yedam.app.order.OrderDAO;
@@ -28,7 +32,7 @@ public class Management {
 				new ProductInfoManagement().run();
 			}else if(menuNo==2) {
 				//2.공지사항
-//				new BoardManagement();
+				new NoticeManagement();
 			}else if(menuNo==3) {
 				//3.로그인
 				new LoginControl();
@@ -52,14 +56,17 @@ public class Management {
 	}
 	
 	//메소드 
-	protected int selectRole() {	//관리자 0 회원1 비회원2
+	
+	//권환확인 - 반환값 : 관리자 0 회원1 비회원2
+	protected int selectRole() {	
 		if(LoginControl.getLoginInof()==null) {	
 			return 2;
 		}
 		return LoginControl.getLoginInof().getMemberRole();
 	}
-
-	protected boolean checkLogin() {	//로그인 상태 확인
+	
+	//로그인 상태 확인
+	protected boolean checkLogin() {	
 		if(selectRole()==2) {	//selectRole : 관리자0 회원1 비회원2 
 			System.out.println("로그인 후 이용 가능합니다.");
 			System.out.print("로그인하시겠습니까? 1.네 2.아니오 > ");
@@ -98,5 +105,13 @@ public class Management {
 		System.out.println("메뉴에서 입력해주시기 바랍니다.");
 	}
 	
-
+	//카테고리별 게시글이 존재하는지 확인
+	protected boolean isBoardExist(int category) {
+		List<Board> list = bDAO.selectAll(category);	
+		if(list.size()<=0) {
+			System.out.println("게시글이 존재하지 않습니다.");
+			return false;
+		}
+		return true;
+	}
 }

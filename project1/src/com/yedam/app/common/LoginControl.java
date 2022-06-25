@@ -26,7 +26,7 @@ public class LoginControl extends Management{
 					//로그인
 					login();
 					//성공할 경우 프로그램 실행
-					if(checkLogin()) break;
+					if(selectRole()!=2) break;
 				}else if(menuNo==2) {
 					//회원가입
 					new SignUp();
@@ -43,9 +43,9 @@ public class LoginControl extends Management{
 		//메소드
 		@Override
 		protected void menuPrint() {
-			System.out.println("*********************");
+			System.out.println("**********************");
 			System.out.println(" 1.로그인 2.회원가입 9.홈");	//로그인 하지 않고 이용하는 서비스 있을시 여기 추가
-			System.out.println("*********************");
+			System.out.println("**********************");
 		}
 		
 		//로그인

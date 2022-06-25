@@ -21,8 +21,8 @@ public class Board {
 	public String toString() {
 		String str = "";
 		if (boardCategory==1) {
-			str = boardNum + ". 제품명 : "+productName+" (평점 " + boardStar + "/5)\n"
-					+"   제목 : " + boardSubject + " 작성자: "+boardMId
+			str = boardNum + ". 제품명 : "+productName+" (평점 " + star + ")"
+					+"\n   제목 : " + boardSubject + "\t작성자: "+boardMId
 					+"\n   내용 : " + boardContent;
 		} else {
 			str = boardNum + ". " + boardSubject 

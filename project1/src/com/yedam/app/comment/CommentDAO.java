@@ -50,9 +50,9 @@ public class CommentDAO extends DAO {
 
 		try {
 			connect();
-			String sql = "SELECT comment_b_num "
+			String sql = "SELECT comment_b_num, "
 						+ "REPLACE(comment_m_id, SUBSTR(comment_m_id,2,3),'***') m_id, "
-						+ "comment_content, comment_date FROM comments "
+						+ "comment_content, comment_date "
 						+ "FROM comments "
 						+ "WHERE comment_b_num=" + boardNum
 						+ " ORDER BY comment_date DESC";

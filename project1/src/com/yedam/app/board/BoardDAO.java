@@ -27,14 +27,13 @@ public class BoardDAO extends DAO{
 						+ "VALUES (board_seq.nextval,?,?,?,?,?,?,?) "; 
 																										// 입력안해도 무관
 			pstmt = conn.prepareStatement(sql);
-			pstmt.setString(1, board.getBoardMId());
-			pstmt.setString(2, board.getBoardPwd());
-			pstmt.setInt(3, board.getBoardStar()); 
-			pstmt.setString(4, board.getBoardSubject());
-			pstmt.setString(5, board.getBoardContent());
-			pstmt.setInt(6, board.getBoardCategory());
-			pstmt.setInt(7, board.getProductId());
-			
+			pstmt.setInt(1, board.getProductId());
+			pstmt.setString(2, board.getBoardMId());
+			pstmt.setString(3, board.getBoardPwd());
+			pstmt.setInt(4, board.getBoardStar()); 
+			pstmt.setString(5, board.getBoardSubject());
+			pstmt.setString(6, board.getBoardContent());
+			pstmt.setInt(7, board.getBoardCategory());
 
 			int result = pstmt.executeUpdate();
 			if (result > 0) {
@@ -124,6 +123,7 @@ public class BoardDAO extends DAO{
 		}
 		return board;
 	}
+	
 	//전체조회
 	public List<Board> selectAll() {
 		List<Board> list = new ArrayList<>();
@@ -157,4 +157,38 @@ public class BoardDAO extends DAO{
 		}
 		return list;
 	}
+	
+	//게시판별 전체조회
+		public List<Board> selectAll(int category) {
+			List<Board> list = new ArrayList<>();
+
+			try {
+				connect();
+				String sql = "SELECT b.board_num num, p.product_name pname, b.board_subject s, "
+						+ "RPAD(SUBSTR('★★★★★',1,b.board_star),5,'☆') star, b.board_m_id mid, b.board_content cont "
+					    + "FROM products p JOIN board b "
+					    + "ON (p.product_id = b.board_product) "
+					    + "WHERE b.board_category="+category
+					    + " ORDER BY b.board_num";
+				stmt = conn.createStatement();
+				
+				rs = stmt.executeQuery(sql);
+				while (rs.next()) {
+					Board board = new Board();
+					board.setBoardNum(rs.getInt("num"));
+					board.setProductName(rs.getString("pname"));
+					board.setBoardSubject(rs.getString("s"));
+					board.setStar(rs.getString("star"));
+					board.setBoardMId(rs.getString("mid"));
+					board.setBoardContent(rs.getString("cont"));
+					
+					list.add(board); 
+				}
+			} catch (SQLException e) {
+				e.printStackTrace();
+			} finally {
+				disconnect();
+			}
+			return list;
+		}
 }

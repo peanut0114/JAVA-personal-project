@@ -6,7 +6,6 @@ import com.yedam.app.comment.Comment;
 import com.yedam.app.common.LoginControl;
 import com.yedam.app.common.Management;
 import com.yedam.app.order.OrderInfo;
-import com.yedam.app.product.Product;
 
 public class ReviewManagement extends Management {
 
@@ -16,7 +15,7 @@ public class ReviewManagement extends Management {
 		while (true) {
 			// 리뷰출력
 			reviewChartPrint();
-			// 1.후기등록 2.후기수정 3.댓글작성 9.뒤로가기
+			// 1.후기등록 2.후기자세히보기 9.뒤로가기
 			menuPrint();
 			int menuNo = menuSelect();
 
@@ -25,10 +24,7 @@ public class ReviewManagement extends Management {
 				isertReview();
 			} else if (menuNo == 2) {
 				// 후기 자세히 보기
-				reviewContent();
-			} else if (menuNo == 3) {
-				// 댓글작성
-				insertComment();
+				reviewPrint();
 			} else if (menuNo == 9) {
 				// 뒤로가기
 				break;
@@ -47,34 +43,40 @@ public class ReviewManagement extends Management {
 		System.out.println("----------------------------------");
 	}
 
-	private void reviewContent() {
+
+	private void reviewPrint() {	//2. 후기 자세히 보기
 
 		while (true) {
-			// 후기글 번호 선택
-			int reviewNum = menuSelect();
+			// 게시글이 하나도 없을 경우 break
+			if(!isBoardExist(1)) break;
+			
+			// 게시글 번호 선택 
+			System.out.print("게시글 번호 ");
+			int menu = menuSelect();
+			
+			// 존재하는 글인지 확인
+			if (bDAO.selectOne(menu).getBoardSubject()==null) {
+				System.out.println("존재하지 않는 게시글입니다.");
+				break;
+			}
+			
 			// 후기글+댓글 프린트
-			reviewPrint(reviewNum);
-			// 1.댓글작성 2.뒤로가기
+			reviewPrint(menu);
+
+			// 1.댓글작성 2.뒤로가기 메뉴출력
 			System.out.println("\n1.댓글작성 2.뒤로가기");
 			int menuNo = menuSelect();
 
 			if (menuNo == 1) {
-				// 후기등록
-				isertReview();
-			} else if (menuNo == 2) {
-				// 후기 자세히 보기
-				reviewContent();
-			} else if (menuNo == 3) {
-				// 댓글작성
+				// 1.댓글작성
 				insertComment();
-			} else if (menuNo == 9) {
-				// 뒤로가기
+			} else if (menuNo == 2) {
+				// 2. 뒤로가기
 				break;
 			} else {
 				// 입력오류
 				showInputError();
 			}
-
 		}
 	}
 
@@ -122,8 +124,9 @@ public class ReviewManagement extends Management {
 		if (!checkLogin())
 			return;
 		// 후기글 번호 선택
+		System.out.println("게시글 번호 ");
 		int boardNo = menuSelect();
-
+		// 선택가능한 항목인지 확인
 		Comment comment = new Comment();
 		comment.setCommentMid(LoginControl.getLoginInof().getMemberId());
 		comment.setCommentBnum(boardNo);
@@ -148,7 +151,7 @@ public class ReviewManagement extends Management {
 		return true;
 	}
 
-	private void reviewChartPrint() { // 후기 출력
+	private void reviewChartPrint() { // 후기 제목 출력
 		List<Board> list = bDAO.selectAll();
 		System.out.println("---------------------구매후기--------------------------");
 		for (Board board : list) {
@@ -157,18 +160,6 @@ public class ReviewManagement extends Management {
 			System.out.println(str);
 		}
 		System.out.println("----------------------------------------------------");
-	}
-
-	protected int cookieSelect() {
-		System.out.println("번호 선택 > ");
-		int productId = Integer.parseInt(sc.nextLine());
-		Product product = pDAO.selectOne(productId);
-		if (product == null) {
-			System.out.println("해당 쿠키가 존재하지 않습니다.");
-			return 0;
-		}
-		return productId;
-
 	}
 
 }
