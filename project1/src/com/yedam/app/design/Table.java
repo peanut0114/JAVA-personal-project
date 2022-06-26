@@ -12,6 +12,7 @@ public class Table {
 	product_price number constraint product_price_nn NOT NULL,
 	product_explain VARCHAR2(1000));
 
+	insert into products values (0,	'공지',	0,	'공지게시판');
 	insert into products values (500,	'피넛쿠키',	3200,	'고소한 땅콩을 갈아넣어 만든 쿠키');
 	insert into products values (501,	'화이트마카다미아쿠키',	3800,	'은경언니가 추천하는 최애쿠키 츄라이츄라이');
 

@@ -7,6 +7,7 @@ public class SignUp {
 
 	protected MemberDAO mDAO = MemberDAO.getInstance();
 	private Scanner sc = new Scanner(System.in);
+	
 	public SignUp() {
 
 		System.out.println("\n정보를 입력해주십시오.");

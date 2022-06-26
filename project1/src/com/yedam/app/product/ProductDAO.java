@@ -93,7 +93,7 @@ public class ProductDAO extends DAO {
 		}
 	}
 
-	// 단건조회 - 싱품이름
+	// 단건조회 - 상품이름
 	public Product selectOne(String productName) {
 		Product product = null;
 		try {
@@ -156,7 +156,9 @@ public class ProductDAO extends DAO {
 
 		try {
 			connect();
-			String sql = "SELECT * FROM products ORDER BY product_id";
+			String sql = "SELECT * FROM products "
+					+ " WHERE product_id <> 0"
+					+ " ORDER BY product_id"; //0은 공지글의 참조키
 			stmt = conn.createStatement();
 
 			rs = stmt.executeQuery(sql);

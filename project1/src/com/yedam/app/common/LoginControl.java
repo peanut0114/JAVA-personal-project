@@ -2,14 +2,13 @@ package com.yedam.app.common;
 
 import java.util.Scanner;
 
-import com.yedam.app.manager.ManagerPage;
 import com.yedam.app.member.Member;
 import com.yedam.app.member.MemberDAO;
 import com.yedam.app.member.SignUp;
 
 
 public class LoginControl extends Management{
-	//필드 - 종료 전까지 로그인 정보를 저장
+		//필드 - 종료 전까지 로그인 정보를 저장
 		private static Member loginInfo = null	;
 		public static Member getLoginInof() {	
 			return loginInfo;					

@@ -15,16 +15,16 @@ public class ReviewManagement extends Management {
 		while (true) {
 			// 리뷰출력
 			reviewChartPrint();
-			// 1.후기등록 2.후기자세히보기 9.뒤로가기
+			// 1.후기자세히보기 2.후기등록 9.뒤로가기
 			menuPrint();
 			int menuNo = menuSelect();
 
 			if (menuNo == 1) {
+				// 후기선택
+				reviewPrint();
+			} else if (menuNo == 2) {
 				// 후기등록
 				isertReview();
-			} else if (menuNo == 2) {
-				// 후기 자세히 보기
-				reviewPrint();
 			} else if (menuNo == 9) {
 				// 뒤로가기
 				break;
@@ -39,45 +39,39 @@ public class ReviewManagement extends Management {
 	@Override
 	protected void menuPrint() {
 		System.out.println("----------------------------------");
-		System.out.println(" 1.후기등록  2.후기 자세히 보기  9.뒤로가기");
+		System.out.println(" 1.후기 자세히보기  2.후기등록  9.뒤로가기");
 		System.out.println("----------------------------------");
 	}
 
 
 	private void reviewPrint() {	//2. 후기 자세히 보기
-
-		while (true) {
 			// 게시글이 하나도 없을 경우 break
-			if(!isBoardExist(1)) break;
-			
+			if(!isBoardExist(1)) return;
 			// 게시글 번호 선택 
 			System.out.print("게시글 번호 ");
-			int menu = menuSelect();
-			
+			int boardNum = menuSelect();
 			// 존재하는 글인지 확인
-			if (bDAO.selectOne(menu).getBoardSubject()==null) {
-				System.out.println("존재하지 않는 게시글입니다.");
-				break;
-			}
-			
+			if (!isBoardNumExist(boardNum)) return;
 			// 후기글+댓글 프린트
-			reviewPrint(menu);
-
-			// 1.댓글작성 2.뒤로가기 메뉴출력
-			System.out.println("\n1.댓글작성 2.뒤로가기");
+			reviewPrint(boardNum);
+			// 1.댓글작성 2.후기수정 9.뒤로가기 메뉴출력
+			System.out.println("\n1.댓글작성 2.후기수정 9.뒤로가기");
 			int menuNo = menuSelect();
 
 			if (menuNo == 1) {
 				// 1.댓글작성
-				insertComment();
+				insertComment(boardNum);
 			} else if (menuNo == 2) {
-				// 2. 뒤로가기
-				break;
+				// 2. 후기 수정
+				updateBoard(boardNum);
+			}else if (menuNo == 9) {
+				// 9. 뒤로가기
+				return;
 			} else {
 				// 입력오류
 				showInputError();
 			}
-		}
+		
 	}
 
 	private void reviewPrint(int num) {
@@ -119,17 +113,14 @@ public class ReviewManagement extends Management {
 		bDAO.insert(review);
 	}
 
-	private void insertComment() {
+	private void insertComment(int boardNum) {
 		// 로그인 확인
 		if (!checkLogin())
 			return;
-		// 후기글 번호 선택
-		System.out.println("게시글 번호 ");
-		int boardNo = menuSelect();
-		// 선택가능한 항목인지 확인
+		
 		Comment comment = new Comment();
 		comment.setCommentMid(LoginControl.getLoginInof().getMemberId());
-		comment.setCommentBnum(boardNo);
+		comment.setCommentBnum(boardNum);
 		comment.setCommentContent(writeReview());
 
 		cDAO.insert(comment);
@@ -162,4 +153,29 @@ public class ReviewManagement extends Management {
 		System.out.println("----------------------------------------------------");
 	}
 
+
+	// 게시글 수정
+	protected void updateBoard(int boardNum) {
+		if(!checkLogin()) return;
+		Board board = bDAO.selectOne(boardNum);
+		// 작성자인지 확인
+		if (!board.getBoardMId().equals(LoginControl.getLoginInof().getMemberId())) {
+			System.out.println("작성자만 수정 가능합니다.");
+			return;
+		}
+		// 수정
+		System.out.println("현재 제목: " + board.getBoardSubject());
+		System.out.println("수정할 제목 (수정 하지 않을 경우 0 입력) > ");
+		String str = sc.nextLine();
+		if (!str.equals("0")) {
+			board.setBoardSubject(str);
+		}
+		System.out.println("현재 내용: " + board.getBoardContent());
+		System.out.println("수정할 내용 (수정 하지 않을 경우 0 입력) > ");
+		str = sc.nextLine();
+		if (!str.equals("0")) {
+			board.setBoardContent(str);
+		}
+		bDAO.updateInfo(board);
+	}
 }

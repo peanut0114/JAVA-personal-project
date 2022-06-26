@@ -46,7 +46,7 @@ public class ProductInfoManagement extends Management {
 		// 제품의 등록 여부 확인
 		Product product = pDAO.selectOne(info.getProductId());
 
-		if (product == null) {
+		if (product == null || product.getProductId()==0) {	//0은 공지글 참조키
 			System.out.println("등록된 제품이 아닙니다.");
 			return;
 		}

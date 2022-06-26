@@ -20,7 +20,9 @@ public class OrderInfo {
 	@Override
 	public String toString() {
 		return dealDate + "  " + productId + ". " + productName
-				+ ", 주문량 : " + dealAmount + ", 발송예정일 : "+ shipmentDate;
+				+ ", 주문자 : " + ordererId
+				+ ", 주문량 : " + dealAmount 
+				+ ", 발송예정일 : "+ shipmentDate;
 		
 	}
 }

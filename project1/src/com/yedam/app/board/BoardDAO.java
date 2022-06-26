@@ -99,8 +99,9 @@ public class BoardDAO extends DAO{
 		Board board = new Board();
 		try {
 			connect();
-			String sql = "SELECT b.board_num num, p.product_name pname, b.board_subject s, "
-					+ "RPAD(SUBSTR('★★★★★',1,b.board_star),5,'☆') star, b.board_m_id mid, b.board_content cont, b.board_category c "
+			String sql = "SELECT b.board_num, p.product_name, b.board_subject, "
+					+ "RPAD(SUBSTR('★★★★★',1,b.board_star),5,'☆') star, b.board_star, "
+					+ "b.board_m_id, b.board_content, b.board_category "
 				    + "FROM products p JOIN board b "
 				    + "ON (p.product_id = b.board_product) "
 				    + "WHERE board_num="+boardNum;
@@ -108,13 +109,14 @@ public class BoardDAO extends DAO{
 			
 			rs = stmt.executeQuery(sql);
 			if (rs.next()) {
-				board.setBoardNum(rs.getInt("num"));
-				board.setProductName(rs.getString("pname"));
-				board.setBoardSubject(rs.getString("s"));
+				board.setBoardNum(rs.getInt("b.board_num"));
+				board.setProductName(rs.getString("p.product_name"));
+				board.setBoardSubject(rs.getString("b.board_m_id"));
 				board.setStar(rs.getString("star"));
-				board.setBoardMId(rs.getString("mid"));
-				board.setBoardContent(rs.getString("cont"));
-				board.setBoardCategory(rs.getInt("c"));
+				board.setBoardStar(rs.getInt("b.board_star"));				
+				board.setBoardMId(rs.getString("b.board_m_id"));
+				board.setBoardContent(rs.getString("b.board_content"));
+				board.setBoardCategory(rs.getInt("b.board_category"));
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
