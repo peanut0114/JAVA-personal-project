@@ -14,14 +14,20 @@ public class Order {
 	private int dealAmount;
 	private String ordererId;
 	private Date shipmentDate;
-	private boolean conditon; // 0 :발송준비중, 1:발송완료
+	private boolean condition; // 0 :발송준비중, 1:발송완료
 	private String productName;
 	
 	@Override
 	public String toString() {
+		String con="";
+		if(condition) {
+			con = "발송완료";
+		}else {
+			con = "발송준비중";
+		}
 		return dealDate + "  " + productId + "." + productName
-				+ ", 주문량 : " + dealAmount 
-				+ ", 발송예정일 : "+ shipmentDate;
+				+ "(" + dealAmount+"개)" 
+				+ "\n └ 발송예정일 : "+ shipmentDate+" ("+con+")";
 		
 	}
 }

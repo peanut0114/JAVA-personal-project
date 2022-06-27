@@ -23,6 +23,7 @@ public class SignUp {
 		member = new Member();
 		member.setMemberId(id);
 		
+		try {
 		System.out.print("비밀번호 > ");
 		member.setMemberPwd(sc.nextLine());
 		System.out.print("이름 > ");
@@ -35,5 +36,8 @@ public class SignUp {
 		member.setMemberAddr(sc.nextLine());
 		
 		mDAO.insert(member);
+		}catch(IllegalArgumentException e) {
+			System.out.println("생년월일을 형식에 맞게 입력해주십시오.");
+		}
 	}
 }

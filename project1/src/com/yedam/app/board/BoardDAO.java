@@ -23,8 +23,10 @@ public class BoardDAO extends DAO{
 	public void insert(Board board) {
 		try {
 			connect();
-			String sql = "INSERT INTO board "
-						+ "VALUES (board_seq.nextval,?,?,?,?,?,?,sysdate,?) "; 
+			String sql = "INSERT INTO board(board_num,board_product"
+					+ ",board_m_id,board_pwd,board_star,board_subject"
+					+ ",board_content,board_date,board_category) "
+					+ "VALUES (board_seq.nextval,?,?,?,?,?,?,sysdate,?) "; 
 																										// 입력안해도 무관
 			pstmt = conn.prepareStatement(sql);
 			pstmt.setInt(1, board.getProductId());

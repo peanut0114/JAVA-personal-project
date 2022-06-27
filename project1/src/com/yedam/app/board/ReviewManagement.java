@@ -157,8 +157,10 @@ public class ReviewManagement extends Management {
 
 	// 게시글 수정
 	protected void updateBoard(int boardNum) {
-		Board board = bDAO.selectOne(boardNum,1);
+		//로그인 상태 확인
+		if(!checkLogin()) return;
 		// 작성자인지 확인
+		Board board = bDAO.selectOne(boardNum,1);
 		if (!board.getBoardMId().equals(LoginControl.getLoginInof().getMemberId())) {
 			System.out.println("작성자만 수정 가능합니다.");
 			return;

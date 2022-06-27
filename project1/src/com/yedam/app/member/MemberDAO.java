@@ -23,7 +23,8 @@ public class MemberDAO extends DAO{
 		public void insert(Member member) {
 			try {
 				connect();	
-				String sql = "INSERT INTO members "
+				String sql = "INSERT INTO members(member_id,member_pwd,member_name"
+						+ ",member_birth,member_phone,member_addr,member_role)"
 							+ "VALUES(?,?,?,?,?,?,1)";	
 				pstmt = conn.prepareStatement(sql);
 				pstmt.setString(1, member.getMemberId());

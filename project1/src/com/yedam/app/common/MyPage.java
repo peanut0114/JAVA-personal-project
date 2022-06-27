@@ -74,13 +74,14 @@ public class MyPage extends Management {
 		// 기본 회원 정보
 		Member member = mDAO.selectOne(LoginControl.getLoginInof().getMemberId());
 		System.out.println(member);
-		System.out.println("\n-------------주문내역---------------\n");
+		System.out.println("\n  --------------주문내역--------------\n");
 		// 주문내역
 		List<Order> list = oDAO.selectAll(member.getMemberId());
 		for (Order info : list) {
 			System.out.println(" " + info);
 		}
-		System.out.println("\n++++++++++++++++++++++++++++++++++++");
+		System.out.println("\n\t║▌│█║▌║ █║▌│█│║▌║");
+		System.out.println("++++++++++++++++++++++++++++++++++++");
 
 	}
 
@@ -111,7 +112,7 @@ public class MyPage extends Management {
 	private void updateMember() {
 		Member member = mDAO.selectOne(LoginControl.getLoginInof().getMemberId());
 
-		System.out.println("\n< 회원정보 수정 | 비밀번호, 연락처, 주소 >\n");
+		System.out.println("\n< 회원정보 수정 | 비밀번호, 연락처, 주소 >");
 		// 비밀번호 확ㅇ니
 		System.out.print("기존 비밀번호 입력 > ");
 		String info = sc.nextLine();

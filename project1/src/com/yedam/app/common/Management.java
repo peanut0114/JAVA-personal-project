@@ -35,8 +35,9 @@ public class Management {
 				// 2.공지사항
 				new NoticeManagement();
 			} else if (menuNo == 3) {
-				// 4.로그인
-				new LoginControl();
+				// 4.로그인/로그아웃
+				if(selectRole()==2) new LoginControl();
+				else LoginControl.logout();
 			} else if (menuNo == 4) {
 				// 5.마이페이지
 				// -1.로그인 확인
@@ -58,9 +59,13 @@ public class Management {
 
 	// 메소드
 	protected void menuPrint() {
-		System.out.println("========================================");
-		System.out.println(" 1.전체상품 2.공지사항 3.로그인 4.마이페이지 9.종료");
-		System.out.println("========================================");
+		System.out.println("==========================================");
+		if(selectRole()==2) {//로그인 하지 않았을시
+			System.out.println(" 1.전체상품 2.공지사항 3.로그인 4.마이페이지 9.종료");
+		}else {
+			System.out.println(" 1.전체상품 2.공지사항 3.로그아웃 4.마이페이지 9.종료");
+		}
+		System.out.println("==========================================");
 	}
 
 	// 권환확인 - 반환값 : 관리자 0 회원1 비회원2
@@ -85,6 +90,7 @@ public class Management {
 		return true;
 	}
 
+	//메뉴선택
 	protected int menuSelect() {
 		System.out.print("선택 > ");
 		int menuNo = 0;

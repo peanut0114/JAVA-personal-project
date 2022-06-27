@@ -26,6 +26,7 @@ public class LoginControl extends Management{
 					login();
 					//성공할 경우 프로그램 실행 (2=비회원)
 					if(selectRole()!=2) break;
+					
 				}else if(menuNo==2) {
 					//회원가입
 					new SignUp();
@@ -35,14 +36,13 @@ public class LoginControl extends Management{
 				}else {
 					showInputError();
 				}
-				System.out.println();
 			}
 		}
 
 		//메소드
 		@Override
 		protected void menuPrint() {
-			System.out.println("**********************");
+			System.out.println("\n**********************");
 			System.out.println(" 1.로그인 2.회원가입 9.홈");	//로그인 하지 않고 이용하는 서비스 있을시 여기 추가
 			System.out.println("**********************");
 		}
@@ -58,9 +58,13 @@ public class LoginControl extends Management{
 				System.out.println();
 				return;
 			}
-			System.out.println("-로그인 성공-");
+			System.out.println("･✧ 로그인 성공 ✧･");
 		}
-		
+		//로그아웃
+		static void logout() {
+			loginInfo=null;
+			System.out.println("･✧ 로그아웃 ✧･");
+		}
 
 		private Member inputMember() {
 			Member info = new Member();

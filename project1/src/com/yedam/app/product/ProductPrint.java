@@ -43,7 +43,11 @@ public class ProductPrint extends Management {
 
 		// 제품 번호와 주문량 입력
 		Order info = inputAmount();
-
+		// 수량 체크
+		if(info.getDealAmount()==0||info.getDealAmount()>200) {
+				System.out.println("수량은 1~200개 사이로 입력하세요.");
+				return;
+		}
 		// 제품의 등록 여부 확인
 		Product product = pDAO.selectOne(info.getProductId());
 
@@ -75,20 +79,17 @@ public class ProductPrint extends Management {
 	private Order inputAmount() { // 거래수량 입력
 
 		Order info = new Order();
+		System.out.println("\n<주문창>");
 		// 제품이름
 		System.out.print("제품번호 > ");
 		info.setProductId(Integer.parseInt(sc.nextLine()));
 		// 수량
-		System.out.print("수량 > ");
 		int amount=0;
 		try {
+			System.out.print("수량 > ");
 			amount = Integer.parseInt(sc.nextLine());
-			if (amount > 200) {
-				System.out.println("200개까지 주문 가능합니다.\n수량 > ");
-				amount = Integer.parseInt(sc.nextLine());
-			}
 		} catch (NumberFormatException e) {
-			System.out.println("숫자를 입력해주시기 바랍니다.");
+			System.out.println("입력오류");
 		}
 		info.setDealAmount(amount);
 		return info;
