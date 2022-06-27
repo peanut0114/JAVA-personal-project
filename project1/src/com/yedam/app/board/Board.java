@@ -1,5 +1,7 @@
 package com.yedam.app.board;
 
+import java.sql.Date;
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -15,18 +17,20 @@ public class Board {
 	private String star;
 	private String boardSubject; // 제목
 	private String boardContent; // 내용
+	private Date boardDate;
 	private int boardCategory; // 0:공지게시판, 1:후기게시판
 
 	@Override
 	public String toString() {
 		String str = "";
 		if (boardCategory==1) {
-			str = boardNum + ". 제품명 : "+productName+" (평점 " + star + ")"
+			str = boardNum + ". 제품명 : " + productName
+					+" (평점 " + star + ")" + "\t"+boardDate
 					+"\n   제목 : " + boardSubject + "\t작성자: "+boardMId
 					+"\n   내용 : " + boardContent;
 		} else {
-			str = boardNum + ". " + boardSubject 
-					+ "\\n   내용 : " + boardContent;
+			str = boardNum + ". " + boardSubject+"\t"+boardDate
+					+ "\n   내용 : " + boardContent;
 		}
 		return str;
 	}

@@ -9,16 +9,12 @@ public class NoticeManagement extends Management {
 
 	public NoticeManagement() {
 
-		// 1. 게시판 목록 출력
-		List<Board> list = bDAO.selectAll(0);
-		for (Board board : list) {
-			System.out.println(board);
-		}
-
 		while (true) {
+			// 1. 게시판 목록 출력
+			allNoticePrint();
+			// 2-1. 관리자 (1.게시글선택 2.공지등록 3.공지수정 9.홈)
+			// 2-2. 회원, 비회원 (1.게시글선택 9.홈)
 			menuPrint();
-			// 2. 관리자 (1.게시글선택 2.공지등록 3.공지수정 9.홈)
-			// 3. 회원, 비회원 (1.게시글선택 9.홈)
 			int menu = menuSelect();
 
 			if (menu == 1) {
@@ -30,13 +26,51 @@ public class NoticeManagement extends Management {
 			} else if (menu == 3) {
 				// 공지수정
 				updateBoard();
+			} else if (menu == 4) {
+				// 공지삭제
+				deleteBoard();
 			} else if (menu == 9) {
 				// 홈
 				break;
 			} else {
 				showInputError();
 			}
+			System.out.println();
 		}
+	}
+
+	private void deleteBoard() {
+		// 게시글 번호 선택
+		System.out.print("게시글 번호 ");
+		int num = menuSelect();
+		// 등록된 글인지 확인
+		if (!isBoardNumExist(num, 0))
+			return;
+		Board board = bDAO.selectOne(num, 0);
+
+		System.out.println(num+"번 게시글을 정말 삭세하시겠습니까? 1.yes 2.no");
+		int menu= menuSelect();
+		if(menu==1) {
+			bDAO.delete(num);
+		}
+	}
+
+	private void allNoticePrint() {
+		List<Board> list = bDAO.selectAll(0);
+		System.out.println("\n---------------게시판-----------------\n");
+		// 게시글이 존재하는지 확인
+		if (!isBoardExist(0)) {
+			System.out.println("\n------------------------------------");
+			return;
+		}
+		// 존재할 경우
+		for (Board board : list) {
+			System.out.println("  " + board.getBoardNum() 
+							+ ". " + board.getBoardSubject()
+							+ "\t\t"+board.getBoardDate());
+		}
+
+		System.out.println("\n------------------------------------");
 	}
 
 	// 게시글 수정
@@ -45,27 +79,29 @@ public class NoticeManagement extends Management {
 		System.out.print("게시글 번호 ");
 		int num = menuSelect();
 		// 등록된 글인지 확인
-		if (!isBoardNumExist(num))
+		if (!isBoardNumExist(num, 0))
 			return;
-		Board board = bDAO.selectOne(num);
+		Board board = bDAO.selectOne(num, 0);
 
 		// 작성자인지 확인
-		if (board.getBoardMId() != LoginControl.getLoginInof().getMemberId())
+		if (!board.getBoardMId().equals(LoginControl.getLoginInof().getMemberId())) {
+			System.out.println("작성자만 수정 가능합니다.");
 			return;
+		}
 		// 수정
 		System.out.println("제목: " + board.getBoardSubject());
 		System.out.println("제목 수정 (수정 하지 않을 경우 0 입력) > ");
 		String str = sc.nextLine();
-		if (str != "0") {
+		if (!str.equals("0")) {
 			board.setBoardSubject(str);
 		}
 		System.out.println("내용: " + board.getBoardContent());
 		System.out.println("내용 수정 (수정 하지 않을 경우 0 입력) > ");
 		str = sc.nextLine();
-		if (str != "0") {
+		if (!str.equals("0")) {
 			board.setBoardContent(str);
 		}
-		bDAO.insert(board);
+		bDAO.updateInfo(board);
 	}
 
 	private void insertNotice() {
@@ -76,7 +112,10 @@ public class NoticeManagement extends Management {
 		notice.setBoardSubject(sc.nextLine());
 		System.out.println("내용 > ");
 		notice.setBoardContent(sc.nextLine());
+
+		notice.setBoardStar(0);
 		notice.setBoardCategory(0); // 0공지 1후기
+		notice.setProductId(0);// 0 공지 상품참조키
 
 		bDAO.insert(notice);
 	}
@@ -84,11 +123,9 @@ public class NoticeManagement extends Management {
 	@Override
 	protected void menuPrint() {
 		if (selectRole() == 0) {
-			System.out.println("--------------------------");
-			System.out.println(" 1.게시글선택 2.게시글수정 9.홈");
-			System.out.println("--------------------------");
+			System.out.println(" 1.게시글선택 2.공지등록 3.공지수정 4.공지삭제 9.홈");
+			System.out.println("----------------------------------------");
 		} else {
-			System.out.println("----------------");
 			System.out.println(" 1.게시글선택 9.홈");
 			System.out.println("----------------");
 		}
@@ -102,13 +139,15 @@ public class NoticeManagement extends Management {
 		System.out.print("게시글 번호 ");
 		int num = menuSelect();
 		// 존재하는 글인지 확인
-		if (!isBoardNumExist(num))
+		if (!isBoardNumExist(num, 0))
 			return;
 		// 게시글 출력
-		System.out.println(bDAO.selectOne(num));
-		// 9. 뒤로가기
+		System.out.println("\n***********************************************");
+		System.out.println("\n  " + bDAO.selectOne(num, 0));
+		System.out.println("\n***********************************************");
+		//9.뒤로가기
+		System.out.println("9.뒤로가기");
 		while (menuSelect() != 9) {
-			System.out.println("9.뒤로가기");
 			return;
 		}
 	}
@@ -122,8 +161,8 @@ public class NoticeManagement extends Management {
 		} catch (NumberFormatException e) {
 			System.out.println("숫자를 입력해주시기 바랍니다.");
 		}
-		if (selectRole() != 0 && (menuNo == 2 || menuNo == 3)) { // 관리자외 2.수정 선택불가
-			menuNo = 3;
+		if ((selectRole() != 0) && (menuNo > 1 && menuNo <9)) { // 메뉴판 메뉴 외 선택불가
+			menuNo = 0;
 		}
 		return menuNo;
 	}

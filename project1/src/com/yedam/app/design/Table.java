@@ -38,8 +38,8 @@ public class Table {
 	member_birth date,
 	member_phone varchar2(20),
 	member_addr varchar2(500),
-	member_role number(1) default 1, --0관리자, 1회원
-	member_order_num number default 0);
+	member_role number(1) default 1); --0관리자, 1회원
+	
 
 	INSERT INTO members(member_id, member_pwd, member_name, member_role) 
 	VALUES ('admin','admin','manager',0); --관리자 정보 입력
@@ -57,6 +57,7 @@ public class Table {
 	board_star NUMBER(1),	--평가별점(5점만점)
 	board_subject VARCHAR(200), 
 	board_content VARCHAR2(1000), 
+	board_date DATE,
 	board_category NUMBER(1)); --0 공지, 1후기
 	
 	

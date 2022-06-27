@@ -24,7 +24,7 @@ public class MemberDAO extends DAO{
 			try {
 				connect();	
 				String sql = "INSERT INTO members "
-							+ "VALUES(?,?,?,?,?,?,1,0)";	//줄바꿈시 공백주의
+							+ "VALUES(?,?,?,?,?,?,1)";	
 				pstmt = conn.prepareStatement(sql);
 				pstmt.setString(1, member.getMemberId());
 				pstmt.setString(2, member.getMemberPwd());
@@ -79,18 +79,20 @@ public class MemberDAO extends DAO{
 			return loginInfo;
 		}
 		
-		//회원정보 수정 - 주소, 연락처
+		//회원정보 수정 - 비밀번호,주소, 연락처
 		public void updateInfo(Member member) {
 			try {
 				connect();
 				
 				String sql = "UPDATE members "
 							+ "SET member_phone=?, member_addr=? "
+							+ ",member_pwd=?"
 							+ "WHERE member_id=?";
 				pstmt = conn.prepareStatement(sql);
 				pstmt.setString(1, member.getMemberPhone());
 				pstmt.setString(2, member.getMemberAddr());
-				pstmt.setString(3, member.getMemberId());
+				pstmt.setString(3, member.getMemberPwd());
+				pstmt.setString(4, member.getMemberId());
 				
 				int result = pstmt.executeUpdate();
 				if(result>0) {
@@ -125,7 +127,6 @@ public class MemberDAO extends DAO{
 					member.setMemberPhone(rs.getString("member_phone"));
 					member.setMemberAddr(rs.getString("member_addr"));
 					member.setMemberRole(rs.getInt("member_role"));
-					member.setMemberOrderNum(rs.getInt("member_order_num"));
 				}
 				
 			}catch(SQLException e) {
@@ -154,7 +155,6 @@ public class MemberDAO extends DAO{
 					member.setMemberPhone(rs.getString("member_phone"));
 					member.setMemberAddr(rs.getString("member_addr"));
 					member.setMemberRole(rs.getInt("member_role"));
-					member.setMemberOrderNum(rs.getInt("member_order_num"));
 					
 					list.add(member);	//리스트에 넣어야함!!
 				}

@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.yedam.app.common.DAO;
-import com.yedam.app.order.OrderInfo;
+import com.yedam.app.order.Order;
 import com.yedam.app.product.Product;
 
 public class BoardDAO extends DAO{
@@ -24,7 +24,7 @@ public class BoardDAO extends DAO{
 		try {
 			connect();
 			String sql = "INSERT INTO board "
-						+ "VALUES (board_seq.nextval,?,?,?,?,?,?,?) "; 
+						+ "VALUES (board_seq.nextval,?,?,?,?,?,?,sysdate,?) "; 
 																										// 입력안해도 무관
 			pstmt = conn.prepareStatement(sql);
 			pstmt.setInt(1, board.getProductId());
@@ -95,28 +95,30 @@ public class BoardDAO extends DAO{
 	}
 
 	//단건조회
-	public Board selectOne(int boardNum) {
+	public Board selectOne(int boardNum, int category) {
 		Board board = new Board();
 		try {
 			connect();
 			String sql = "SELECT b.board_num, p.product_name, b.board_subject, "
 					+ "RPAD(SUBSTR('★★★★★',1,b.board_star),5,'☆') star, b.board_star, "
-					+ "b.board_m_id, b.board_content, b.board_category "
+					+ "b.board_m_id, b.board_content,b.board_date, b.board_category "
 				    + "FROM products p JOIN board b "
 				    + "ON (p.product_id = b.board_product) "
-				    + "WHERE board_num="+boardNum;
+				    + "WHERE board_num="+boardNum
+				    + " AND board_category="+category;
 			stmt = conn.createStatement();
 			
 			rs = stmt.executeQuery(sql);
 			if (rs.next()) {
-				board.setBoardNum(rs.getInt("b.board_num"));
-				board.setProductName(rs.getString("p.product_name"));
-				board.setBoardSubject(rs.getString("b.board_m_id"));
+				board.setBoardNum(rs.getInt("board_num"));
+				board.setProductName(rs.getString("product_name"));
+				board.setBoardSubject(rs.getString("board_subject"));
 				board.setStar(rs.getString("star"));
-				board.setBoardStar(rs.getInt("b.board_star"));				
-				board.setBoardMId(rs.getString("b.board_m_id"));
-				board.setBoardContent(rs.getString("b.board_content"));
-				board.setBoardCategory(rs.getInt("b.board_category"));
+				board.setBoardStar(rs.getInt("board_star"));				
+				board.setBoardMId(rs.getString("board_m_id"));
+				board.setBoardContent(rs.getString("board_content"));
+				board.setBoardDate(rs.getDate("board_date"));
+				board.setBoardCategory(rs.getInt("board_category"));
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -132,8 +134,9 @@ public class BoardDAO extends DAO{
 
 		try {
 			connect();
-			String sql = "SELECT b.board_num num, p.product_name pname, b.board_subject s, "
-					+ "RPAD(SUBSTR('★★★★★',1,b.board_star),5,'☆') star, b.board_m_id mid, b.board_content cont, b.board_category c "
+			String sql = "SELECT b.board_num, p.product_name, b.board_subject, "
+					+ "RPAD(SUBSTR('★★★★★',1,b.board_star),5,'☆') star, "
+					+ "b.board_m_id, b.board_content,b.board_date, b.board_category "
 				    + "FROM products p JOIN board b "
 				    + "ON (p.product_id = b.board_product) "
 				    + "ORDER BY b.board_num";
@@ -142,13 +145,14 @@ public class BoardDAO extends DAO{
 			rs = stmt.executeQuery(sql);
 			while (rs.next()) {
 				Board board = new Board();
-				board.setBoardNum(rs.getInt("num"));
-				board.setProductName(rs.getString("pname"));
-				board.setBoardSubject(rs.getString("s"));
+				board.setBoardNum(rs.getInt("board_num"));
+				board.setProductName(rs.getString("product_name"));
+				board.setBoardSubject(rs.getString("board_subject"));
 				board.setStar(rs.getString("star"));
-				board.setBoardMId(rs.getString("mid"));
-				board.setBoardContent(rs.getString("cont"));
-				board.setBoardCategory(rs.getInt("c"));
+				board.setBoardMId(rs.getString("board_m_id"));
+				board.setBoardContent(rs.getString("board_content"));
+				board.setBoardDate(rs.getDate("board_date"));
+				board.setBoardCategory(rs.getInt("board_category"));
 				
 				list.add(board); 
 			}
@@ -166,8 +170,9 @@ public class BoardDAO extends DAO{
 
 			try {
 				connect();
-				String sql = "SELECT b.board_num num, p.product_name pname, b.board_subject s, "
-						+ "RPAD(SUBSTR('★★★★★',1,b.board_star),5,'☆') star, b.board_m_id mid, b.board_content cont "
+				String sql = "SELECT b.board_num, p.product_name, b.board_subject, "
+						+ "RPAD(SUBSTR('★★★★★',1,b.board_star),5,'☆') star, "
+						+ "b.board_m_id, b.board_content,b.board_date, b.board_category "
 					    + "FROM products p JOIN board b "
 					    + "ON (p.product_id = b.board_product) "
 					    + "WHERE b.board_category="+category
@@ -177,12 +182,13 @@ public class BoardDAO extends DAO{
 				rs = stmt.executeQuery(sql);
 				while (rs.next()) {
 					Board board = new Board();
-					board.setBoardNum(rs.getInt("num"));
-					board.setProductName(rs.getString("pname"));
-					board.setBoardSubject(rs.getString("s"));
+					board.setBoardNum(rs.getInt("board_num"));
+					board.setProductName(rs.getString("product_name"));
+					board.setBoardSubject(rs.getString("board_subject"));
 					board.setStar(rs.getString("star"));
-					board.setBoardMId(rs.getString("mid"));
-					board.setBoardContent(rs.getString("cont"));
+					board.setBoardMId(rs.getString("board_m_id"));
+					board.setBoardContent(rs.getString("board_content"));
+					board.setBoardDate(rs.getDate("board_date"));
 					
 					list.add(board); 
 				}

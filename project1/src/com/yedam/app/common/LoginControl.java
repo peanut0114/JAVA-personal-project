@@ -24,7 +24,7 @@ public class LoginControl extends Management{
 				if(menuNo==1) {
 					//로그인
 					login();
-					//성공할 경우 프로그램 실행
+					//성공할 경우 프로그램 실행 (2=비회원)
 					if(selectRole()!=2) break;
 				}else if(menuNo==2) {
 					//회원가입

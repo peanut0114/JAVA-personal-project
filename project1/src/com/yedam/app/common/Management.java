@@ -8,10 +8,10 @@ import com.yedam.app.board.BoardDAO;
 import com.yedam.app.board.NoticeManagement;
 import com.yedam.app.comment.Comment;
 import com.yedam.app.comment.CommentDAO;
-import com.yedam.app.member.MyPage;
+import com.yedam.app.member.MemberDAO;
 import com.yedam.app.order.OrderDAO;
 import com.yedam.app.product.ProductDAO;
-import com.yedam.app.product.ProductInfoManagement;
+import com.yedam.app.product.ProductPrint;
 
 public class Management {
 
@@ -21,6 +21,7 @@ public class Management {
 	protected OrderDAO oDAO = OrderDAO.getInstance();
 	protected BoardDAO bDAO = BoardDAO.getInstance();
 	protected CommentDAO cDAO = CommentDAO.getInstance();
+	protected MemberDAO mDAO = MemberDAO.getInstance();
 
 	public void run() {
 		while (true) {
@@ -29,22 +30,21 @@ public class Management {
 
 			if (menuNo == 1) {
 				// 1.전체상품
-				new ProductInfoManagement().run();
+				new ProductPrint().run();
 			} else if (menuNo == 2) {
 				// 2.공지사항
 				new NoticeManagement();
 			} else if (menuNo == 3) {
-				// 3.로그인
+				// 4.로그인
 				new LoginControl();
 			} else if (menuNo == 4) {
-				// 4.마이페이지
+				// 5.마이페이지
 				// -1.로그인 확인
-				if (!checkLogin())
-					return;
+				if (checkLogin())
 				// -2.회원등급체크
 				new MyPage();
 
-			} else if (menuNo == 9) {
+			}else if (menuNo == 9) {
 				// 9.종료
 				exit();
 				break;
@@ -58,9 +58,9 @@ public class Management {
 
 	// 메소드
 	protected void menuPrint() {
-		System.out.println("=========================================");
+		System.out.println("========================================");
 		System.out.println(" 1.전체상품 2.공지사항 3.로그인 4.마이페이지 9.종료");
-		System.out.println("=========================================");
+		System.out.println("========================================");
 	}
 
 	// 권환확인 - 반환값 : 관리자 0 회원1 비회원2
@@ -115,8 +115,9 @@ public class Management {
 	}
 
 	// 입력받은 번호의 게시글이 존재하는지 확인
-	protected boolean isBoardNumExist(int boardNum) {
-		if (bDAO.selectOne(boardNum).getBoardSubject() == null) {
+	protected boolean isBoardNumExist(int boardNum, int category) {
+		Board board = bDAO.selectOne(boardNum,category);
+		if (board.getBoardMId()==null) {
 			System.out.println("존재하지 않는 게시글입니다.");
 			return false;
 		}

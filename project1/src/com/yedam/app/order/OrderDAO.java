@@ -18,7 +18,7 @@ public class OrderDAO extends DAO{
 	}
 
 	// 등록
-	public void insert(OrderInfo info) {
+	public void insert(Order info) {
 		try {
 			connect();
 			String sql = "INSERT INTO orders "
@@ -86,25 +86,29 @@ public class OrderDAO extends DAO{
 		}
 		return amount;
 	}
+	
 	// 전체조회 - 현재까지 출고된 내역
-	public List<OrderInfo> selectAll() {
-		List<OrderInfo> list = new ArrayList<>();
+	public List<Order> selectAll() {
+		List<Order> list = new ArrayList<>();
 
 		try {
 			connect();
 			String sql = "SELECT o.deal_date, o.product_id" 
-							+ ", p.product_name, o.deal_amount "
+							+ ", p.product_name, o.orderer_id, o.deal_amount"
+							+ ", o.shipment_date "
 						+ "FROM products p JOIN orders o " 
 						+ "ON p.product_id = o.product_id "
 						+ "ORDER BY o.deal_date";
 			pstmt = conn.prepareStatement(sql);
 			rs = pstmt.executeQuery();
 			while (rs.next()) {
-				OrderInfo info = new OrderInfo();
+				Order info = new Order();
 				info.setDealDate(rs.getDate("deal_date"));
 				info.setProductId(rs.getInt("product_id"));
 				info.setProductName(rs.getString("product_name"));
+				info.setOrdererId(rs.getString("orderer_id"));
 				info.setDealAmount(rs.getInt("deal_amount"));
+				info.setShipmentDate(rs.getDate("shipment_date"));
 
 				list.add(info);
 			}
@@ -117,8 +121,8 @@ public class OrderDAO extends DAO{
 	}
 
 	// 전체조회 - 해당 날짜에 출고된 내역
-	public List<OrderInfo> selectAll(Date dealDate) {
-		List<OrderInfo> list = new ArrayList<>();
+	public List<Order> selectAll(Date dealDate) {
+		List<Order> list = new ArrayList<>();
 
 		try {
 			connect();
@@ -131,7 +135,7 @@ public class OrderDAO extends DAO{
 			pstmt.setDate(1, dealDate);
 			rs = pstmt.executeQuery();
 			while (rs.next()) {
-				OrderInfo info = new OrderInfo();
+				Order info = new Order();
 				info.setDealDate(rs.getDate("deal_date"));
 				info.setProductId(rs.getInt("product_id"));
 				info.setProductName(rs.getString("product_name"));
@@ -148,13 +152,14 @@ public class OrderDAO extends DAO{
 	}
 	
 	// 전체조회 - 회원아이디
-		public List<OrderInfo> selectAll(String memberId) {
-			List<OrderInfo> list = new ArrayList<>();
+		public List<Order> selectAll(String memberId) {
+			List<Order> list = new ArrayList<>();
 
 			try {
 				connect();
 				String sql = "SELECT o.deal_date, o.product_id" 
-								+ ", p.product_name, o.orderer_id, o.deal_amount "
+								+ ", p.product_name, o.orderer_id, o.deal_amount"
+								+ ", o.shipment_date "
 							+ "FROM products p JOIN orders o " 
 							+ "ON p.product_id = o.product_id "
 							+ "WHERE o.orderer_id = ? ";
@@ -162,12 +167,13 @@ public class OrderDAO extends DAO{
 				pstmt.setString(1,memberId);
 				rs = pstmt.executeQuery();
 				while (rs.next()) {
-					OrderInfo info = new OrderInfo();
+					Order info = new Order();
 					info.setDealDate(rs.getDate("deal_date"));
 					info.setProductId(rs.getInt("product_id"));
 					info.setProductName(rs.getString("product_name"));
 					info.setDealAmount(rs.getInt("deal_amount"));
 					info.setOrdererId(rs.getString("orderer_id"));
+					info.setShipmentDate(rs.getDate("shipment_date"));
 					list.add(info);
 				}
 			} catch (SQLException e) {
@@ -178,13 +184,13 @@ public class OrderDAO extends DAO{
 			return list;
 		}
 		// 전체조회 - 회원아이디, 상품번호 이용
-		public List<OrderInfo> selectAll(String memberId, int productId) {
-			List<OrderInfo> list = new ArrayList<>();
+		public List<Order> selectAll(String memberId, int productId) {
+			List<Order> list = new ArrayList<>();
 
 			try {
 				connect();
-				String sql = "SELECT o.deal_date, o.product_id" 
-								+ ", p.product_name, o.orderer_id, o.deal_amount "
+				String sql = "SELECT o.deal_date, o.product_id, p.product_name" 
+							+ ", o.orderer_id, o.deal_amount, o.shipment_date "
 							+ "FROM products p JOIN orders o " 
 							+ "ON p.product_id = o.product_id "
 							+ "WHERE o.orderer_id = ? "
@@ -194,12 +200,13 @@ public class OrderDAO extends DAO{
 				pstmt.setInt(2, productId);
 				rs = pstmt.executeQuery();
 				while (rs.next()) {
-					OrderInfo info = new OrderInfo();
+					Order info = new Order();
 					info.setDealDate(rs.getDate("deal_date"));
 					info.setProductId(rs.getInt("product_id"));
 					info.setProductName(rs.getString("product_name"));
 					info.setDealAmount(rs.getInt("deal_amount"));
 					info.setOrdererId(rs.getString("orderer_id"));
+					info.setShipmentDate(rs.getDate("shipment_date"));
 					list.add(info);
 				}
 			} catch (SQLException e) {

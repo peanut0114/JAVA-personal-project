@@ -5,11 +5,12 @@ import java.util.List;
 import com.yedam.app.board.ReviewManagement;
 import com.yedam.app.common.LoginControl;
 import com.yedam.app.common.Management;
-import com.yedam.app.order.OrderInfo;
+import com.yedam.app.member.Member;
+import com.yedam.app.order.Order;
 
-public class ProductInfoManagement extends Management {
+public class ProductPrint extends Management {
 
-	public ProductInfoManagement() {
+	public ProductPrint() {
 	}
 
 	public void run() {
@@ -41,7 +42,7 @@ public class ProductInfoManagement extends Management {
 			return;
 
 		// 제품 번호와 주문량 입력
-		OrderInfo info = inputAmount();
+		Order info = inputAmount();
 
 		// 제품의 등록 여부 확인
 		Product product = pDAO.selectOne(info.getProductId());
@@ -52,15 +53,28 @@ public class ProductInfoManagement extends Management {
 		}
 
 		info.setOrdererId(LoginControl.getLoginInof().getMemberId());
-
+		
+		//order table에 등록
 		oDAO.insert(info);
-		// 제품의 재고량을 수정
+		//주문정보 출력
+		orderPrint(info);
 
 	}
 
-	private OrderInfo inputAmount() { // 거래수량 입력
+	private void orderPrint(Order info) {
+		Member member = mDAO.selectOne(info.getOrdererId());
+		Product product = pDAO.selectOne(info.getProductId());
+		System.out.println("\n<주문 정보>");
+		System.out.println("주문자명 : "+member.getMemberName());
+		System.out.println("주문 제품 : "+product.getProductName());
+		System.out.println("수량 : "+info.getDealAmount()+"개");
+		System.out.println("금액 : "+info.getDealAmount()*product.getProductPrice()+"원");
+		System.out.println("\n★주문 완료되었습니다.★");
+	}
 
-		OrderInfo info = new OrderInfo();
+	private Order inputAmount() { // 거래수량 입력
+
+		Order info = new Order();
 		// 제품이름
 		System.out.print("제품번호 > ");
 		info.setProductId(Integer.parseInt(sc.nextLine()));

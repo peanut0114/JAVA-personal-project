@@ -5,7 +5,7 @@ import java.util.List;
 import com.yedam.app.comment.Comment;
 import com.yedam.app.common.LoginControl;
 import com.yedam.app.common.Management;
-import com.yedam.app.order.OrderInfo;
+import com.yedam.app.order.Order;
 
 public class ReviewManagement extends Management {
 
@@ -14,7 +14,7 @@ public class ReviewManagement extends Management {
 
 		while (true) {
 			// 리뷰출력
-			reviewChartPrint();
+			allReviewPrint();
 			// 1.후기자세히보기 2.후기등록 9.뒤로가기
 			menuPrint();
 			int menuNo = menuSelect();
@@ -38,7 +38,6 @@ public class ReviewManagement extends Management {
 
 	@Override
 	protected void menuPrint() {
-		System.out.println("----------------------------------");
 		System.out.println(" 1.후기 자세히보기  2.후기등록  9.뒤로가기");
 		System.out.println("----------------------------------");
 	}
@@ -51,8 +50,9 @@ public class ReviewManagement extends Management {
 			System.out.print("게시글 번호 ");
 			int boardNum = menuSelect();
 			// 존재하는 글인지 확인
-			if (!isBoardNumExist(boardNum)) return;
+			if (!isBoardNumExist(boardNum,1)) return;
 			// 후기글+댓글 프린트
+			System.out.println();
 			reviewPrint(boardNum);
 			// 1.댓글작성 2.후기수정 9.뒤로가기 메뉴출력
 			System.out.println("\n1.댓글작성 2.후기수정 9.뒤로가기");
@@ -74,8 +74,9 @@ public class ReviewManagement extends Management {
 		
 	}
 
+	// 후기글+댓글 프린트
 	private void reviewPrint(int num) {
-		Board board = bDAO.selectOne(num);
+		Board board = bDAO.selectOne(num,1);
 		List<Comment> list = cDAO.selectAll(board.getBoardNum());
 		System.out.println("----------------------------------------------------");
 		System.out.println(board);
@@ -134,7 +135,7 @@ public class ReviewManagement extends Management {
 	private boolean checkRealBuy(int productId) { // 상품 구매 이력 확인
 		String memberId = LoginControl.getLoginInof().getMemberId();
 
-		List<OrderInfo> list = oDAO.selectAll(memberId, productId);
+		List<Order> list = oDAO.selectAll(memberId, productId);
 		if (list.size() <= 0) {
 			System.out.println("구매한 상품만 작성 가능합니다.");
 			return false;
@@ -142,22 +143,21 @@ public class ReviewManagement extends Management {
 		return true;
 	}
 
-	private void reviewChartPrint() { // 후기 제목 출력
-		List<Board> list = bDAO.selectAll();
-		System.out.println("---------------------구매후기--------------------------");
+	private void allReviewPrint() { // 후기 제목 출력
+		List<Board> list = bDAO.selectAll(1);
+		System.out.println("+++++++++++++++++++구매후기+++++++++++++++++++++\n");
 		for (Board board : list) {
-			String str = board.getBoardNum() + ". " + board.getBoardSubject() + " > 주문 :" + board.getProductName() + " "
-					+ board.getStar();
+			String str = " "+board.getBoardNum() + " " +board.getStar() +" "
+			+ board.getBoardSubject() + " | 주문 :" + board.getProductName() ;
 			System.out.println(str);
 		}
-		System.out.println("----------------------------------------------------");
+		System.out.println("\n+++++++++++++++++++++++++++++++++++++++++++++");
 	}
 
 
 	// 게시글 수정
 	protected void updateBoard(int boardNum) {
-		if(!checkLogin()) return;
-		Board board = bDAO.selectOne(boardNum);
+		Board board = bDAO.selectOne(boardNum,1);
 		// 작성자인지 확인
 		if (!board.getBoardMId().equals(LoginControl.getLoginInof().getMemberId())) {
 			System.out.println("작성자만 수정 가능합니다.");

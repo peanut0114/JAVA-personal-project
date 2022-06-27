@@ -27,11 +27,12 @@ public class ProductDAO extends DAO {
 	public void insert(Product product) {
 		try {
 			connect();
-			String sql = "INSERT INTO products(product_id, product_name, product_price) "
-					+ "VALUES(product_seq.nextval, ?, ?)"; // 줄바꿈시 공백주의
+			String sql = "INSERT INTO products(product_id, product_name, product_price, product_explain) "
+					+ "VALUES(product_seq.nextval, ?, ?,?)"; // 줄바꿈시 공백주의
 			pstmt = conn.prepareStatement(sql);
 			pstmt.setString(1, product.getProductName());
 			pstmt.setInt(2, product.getProductPrice());
+			pstmt.setString(3, product.getProductExplain());
 
 			int result = pstmt.executeUpdate();
 			if (result > 0) {

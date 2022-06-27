@@ -21,10 +21,10 @@ public class Member {
 
 	@Override
 	public String toString() {
-		return "이름 : " + memberName + "\n아이디 : " + memberId 
-				+ "\n생년월이 : " + memberBirth 
-				+ "\n연락처 : " + memberPhone 
-				+ "\n주소 : " + memberAddr;
+		return " 이름 : " + memberName + "\n 아이디 : " + memberId 
+				+ "\n 생년월일 : " + memberBirth 
+				+ "\n 연락처 : " + memberPhone 
+				+ "\n 주소 : " + memberAddr;
 	}
 
 }
