@@ -16,7 +16,7 @@ public class ProductPrint extends Management {
 	public void run() {
 		int currentPage = 1;
 		while (true) {
-			int totalPage = (int) Math.ceil(bDAO.selectCount(1) / 5.0);
+			int totalPage = (int) Math.ceil(pDAO.selectCount() / 5.0);
 			int menuNo = 0;
 
 			productPagePrint(currentPage, totalPage);
@@ -99,8 +99,9 @@ public class ProductPrint extends Management {
 		System.out.println("금액 : " + info.getDealAmount() * product.getProductPrice() + "원");
 		System.out.println("\n★주문 완료되었습니다.★");
 	}
-
-	private Order inputAmount() { // 거래수량 입력
+	
+	// 거래수량 입력
+	private Order inputAmount() { 
 
 		Order info = new Order();
 		System.out.println("\n<주문창>");
@@ -123,7 +124,7 @@ public class ProductPrint extends Management {
 	// 상품 목록 출력 - 페이징
 	protected void productPagePrint(int currentPage, int totalPage) {
 
-		System.out.println("\n+++++++++++++++++++ 맛있는 쿠키 ++++++++++++++++++\n");
+		System.out.println("\n+++++++++++++++++++++++++++++++++++++++++++++\n");
 		// 내용이 없는 경우
 		if (totalPage == 0) {
 			System.out.println(" 구매후기가 없습니다.");
@@ -140,18 +141,9 @@ public class ProductPrint extends Management {
 			System.out.print(i + " ");
 		}
 		System.out.println("] " + currentPage + "페이지");
-		System.out.println("+++++++++++++++++++++++++++++++++++++++++++++++++++");
+		System.out.println("+++++++++++++++++++++++++++++++++++++++++++++");
 
 	}
-
-//	private void productPrint() {
-//		System.out.println("\n+++++++++++++++++++++++++++++++++++++++++");
-//		List<Product> list = pDAO.selectAll();
-//		for (Product info : list) {
-//			System.out.println("\n  " + info);
-//		}
-//		System.out.println("\n+++++++++++++++++++++++++++++++++++++++++");
-//	}
 
 	
 }

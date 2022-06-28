@@ -119,7 +119,6 @@ public class ProductDAO extends DAO {
 		}
 		return product;
 	}
-		
 
 	// 단건조회 - 상품번호
 	public Product selectOne(int productId) {
@@ -152,51 +151,47 @@ public class ProductDAO extends DAO {
 	}
 
 	// 전체조회 - 페이징
-		public List<Product> selectAll(int page) {
-			List<Product> list = new ArrayList<>();
-			int start = 1 + (page - 1) * 5; // 1, 6, 11, 16...
-			int end = 5 * page; // 5, 10, 15,...
-			
-			try {
-				connect();
-				String sql = "SELECT * FROM ("
-						+ "SELECT ROWNUM NUM, n.* FROM("
-						+ "SELECT * FROM products "
-						+ "WHERE product_id <>0 "
-						+ "ORDER BY product_id) n)" //0은 공지글의 참조키
-						+ "WHERE NUM BETWEEN ? AND ? ";
-				pstmt = conn.prepareStatement(sql);
-				pstmt.setInt(1, start);
-				pstmt.setInt(2, end);
+	public List<Product> selectAll(int page) {
+		List<Product> list = new ArrayList<>();
+		int start = 1 + (page - 1) * 5; // 1, 6, 11, 16...
+		int end = 5 * page; // 5, 10, 15,...
 
-				rs = pstmt.executeQuery();
-				while (rs.next()) {
-					Product product = new Product();
-					product.setProductId(rs.getInt("product_id"));
-					product.setProductName(rs.getString("product_name"));
-					product.setProductPrice(rs.getInt("product_price"));
-					product.setProductExplain(rs.getString("product_explain"));
+		try {
+			connect();
+			String sql = "SELECT * FROM (" + "SELECT ROWNUM NUM, n.* FROM(" + "SELECT * FROM products "
+					+ "WHERE product_id <>0 " + "ORDER BY product_id) n)" // 0은 공지글의 참조키
+					+ "WHERE NUM BETWEEN ? AND ? ";
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setInt(1, start);
+			pstmt.setInt(2, end);
 
-					list.add(product);
-				}
+			rs = pstmt.executeQuery();
+			while (rs.next()) {
+				Product product = new Product();
+				product.setProductId(rs.getInt("product_id"));
+				product.setProductName(rs.getString("product_name"));
+				product.setProductPrice(rs.getInt("product_price"));
+				product.setProductExplain(rs.getString("product_explain"));
 
-			} catch (SQLException e) {
-				e.printStackTrace();
-			} finally {
-				disconnect();
+				list.add(product);
 			}
 
-			return list;
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			disconnect();
 		}
+
+		return list;
+	}
+
 	// 전체조회
 	public List<Product> selectAll() {
 		List<Product> list = new ArrayList<>();
 
 		try {
 			connect();
-			String sql = "SELECT * FROM products "
-					+ " WHERE product_id <> 0"
-					+ " ORDER BY product_id"; //0은 공지글의 참조키
+			String sql = "SELECT * FROM products " + " WHERE product_id <> 0" + " ORDER BY product_id"; // 0은 공지글의 참조키
 			stmt = conn.createStatement();
 
 			rs = stmt.executeQuery(sql);
@@ -217,5 +212,25 @@ public class ProductDAO extends DAO {
 		}
 
 		return list;
+	}
+
+	// 등록된 상품수
+	public double selectCount() {
+		int count = 0;
+		try {
+			connect();
+			String sql = "SELECT COUNT(*) c FROM products " + "WHERE product_id <>0";
+			stmt = conn.createStatement();
+
+			rs = stmt.executeQuery(sql);
+			if (rs.next()) {
+				count = rs.getInt("c");
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			disconnect();
+		}
+		return count;
 	}
 }

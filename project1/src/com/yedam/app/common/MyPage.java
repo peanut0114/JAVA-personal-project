@@ -211,10 +211,12 @@ public class MyPage extends Management {
 		mDAO.updateInfo(member);
 
 	}
-
+	
+	//삭제
 	private void deleteProduct() {
-		System.out.print("제품 번호 ");
-		int num = menuSelect();
+		try {
+		System.out.print("제품 번호 선택 > ");
+		int num = Integer.parseInt(sc.nextLine());
 		Product product = pDAO.selectOne(num);
 		if (product == null) {
 			System.out.println("존재하지 않는 제품입니다.");
@@ -228,6 +230,9 @@ public class MyPage extends Management {
 		int menu = menuSelect();
 		if (menu == 1)
 			pDAO.delete(num);
+		}catch(NumberFormatException e) {
+			System.out.println("숫자를 입력해주시기 바랍니다.");
+		}
 	}
 
 }
