@@ -55,7 +55,7 @@ public class CommentDAO extends DAO {
 						+ "comment_content, comment_date "
 						+ "FROM comments "
 						+ "WHERE comment_b_num=" + boardNum
-						+ " ORDER BY comment_date DESC";
+						+ " ORDER BY comment_date";
 			stmt = conn.createStatement();
 
 			rs = stmt.executeQuery(sql);
@@ -83,7 +83,7 @@ public class CommentDAO extends DAO {
 		try {
 			connect();
 			String sql = "SELECT * FROM comments WHERE comment_m_id="+memberId 
-						+ "ORDER BY comment_date DESC";
+						+ "ORDER BY comment_date";
 			stmt = conn.createStatement();
 
 			rs = stmt.executeQuery(sql);

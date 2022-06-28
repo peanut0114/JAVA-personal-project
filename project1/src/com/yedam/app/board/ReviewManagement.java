@@ -10,22 +10,38 @@ import com.yedam.app.order.Order;
 public class ReviewManagement extends Management {
 
 	public ReviewManagement() {
-		System.out.println();
 
+		int currentPage = 1;
 		while (true) {
-			// 리뷰출력
-			allReviewPrint();
+			int totalPage = (int) Math.ceil(bDAO.selectCount(1) / 5.0);
+			int menuNo = 0;
+			// 후기출력
+			boardPagePrint(currentPage,totalPage);
 			// 1.후기자세히보기 2.후기등록 9.뒤로가기
 			menuPrint();
-			int menuNo = menuSelect();
+			menuNo = menuSelect();
 
 			if (menuNo == 1) {
-				// 후기선택
-				reviewPrint();
+				if(currentPage==1) {
+					System.out.println("첫번째 페이지입니다.");
+				}else {
+					currentPage--;
+				}
 			} else if (menuNo == 2) {
+				if(currentPage==totalPage) {
+					System.out.println("마지막 페이지입니다.");
+				}else {
+					currentPage++;
+				}
+			} else if (menuNo == 3) {
+				// 자세히보기
+				reviewPrint();
+			} else if (menuNo == 4) {
 				// 후기등록
 				isertReview();
 			} else if (menuNo == 9) {
+				// 후기선택
+				reviewPrint();
 				// 뒤로가기
 				break;
 			} else {
@@ -38,22 +54,26 @@ public class ReviewManagement extends Management {
 
 	@Override
 	protected void menuPrint() {
-		System.out.println(" 1.후기 자세히보기  2.후기등록  9.뒤로가기");
-		System.out.println("----------------------------------");
+		System.out.println("1.이전페이지 2.다음페이지 3.자세히보기 4.등록  9.뒤로가기");
+		System.out.println("---------------------------------------------");
 	}
-
-
-	private void reviewPrint() {	//2. 후기 자세히 보기
-			// 게시글이 하나도 없을 경우 break
-			if(!isBoardExist(1)) return;
-			// 게시글 번호 선택 
-			System.out.print("게시글 번호 ");
-			int boardNum = menuSelect();
-			// 존재하는 글인지 확인
-			if (!isBoardNumExist(boardNum,1)) return;
+	
+	// 후기 자세히 보기
+	private void reviewPrint() {
+		// 게시글이 하나도 없을 경우 break
+		if (!isBoardExist(1))
+			return;
+		// 게시글 번호 선택
+		System.out.print("게시글 번호 ");
+		int boardNum = menuSelect();
+		// 존재하는 글인지 확인
+		if (!isBoardNumExist(boardNum, 1))
+			return;
+		while (true) {
 			// 후기글+댓글 프린트
 			System.out.println();
 			reviewPrint(boardNum);
+			
 			// 1.댓글작성 2.후기수정 9.뒤로가기 메뉴출력
 			System.out.println("\n1.댓글작성 2.후기수정 9.뒤로가기");
 			int menuNo = menuSelect();
@@ -64,19 +84,19 @@ public class ReviewManagement extends Management {
 			} else if (menuNo == 2) {
 				// 2. 후기 수정
 				updateBoard(boardNum);
-			}else if (menuNo == 9) {
+			} else if (menuNo == 9) {
 				// 9. 뒤로가기
-				return;
+				break;
 			} else {
 				// 입력오류
 				showInputError();
 			}
-		
+		}
 	}
 
 	// 후기글+댓글 프린트
 	private void reviewPrint(int num) {
-		Board board = bDAO.selectOne(num,1);
+		Board board = bDAO.selectOne(num, 1);
 		List<Comment> list = cDAO.selectAll(board.getBoardNum());
 		System.out.println("----------------------------------------------------");
 		System.out.println(board);
@@ -88,12 +108,22 @@ public class ReviewManagement extends Management {
 
 	}
 
+	// 후기입력
 	private void isertReview() {
 		// 로그인 확인
 		if (!checkLogin())
 			return;
-		// 상품 번호 선택
-		System.out.printf("후기 작성 제품 ");
+		// 구매내역 출력
+		List<Order> list = oDAO.selectAll(LoginControl.getLoginInof().getMemberId());
+		if (oDAO.selectAmount(LoginControl.getLoginInof().getMemberId()) == 0) {
+			System.out.println("구매 내역이 없습니다.");
+			return;
+		}
+		for (Order info : list) {
+			System.out.println(info.getProductId() + "." + info.getProductName() + " ");
+		}
+		// 쿠키 번호 선택
+		System.out.printf("후기를 작성할 쿠키 번호 ");
 		int productNo = menuSelect();
 		// 구매여부 확인
 		if (!checkRealBuy(productNo))
@@ -114,11 +144,12 @@ public class ReviewManagement extends Management {
 		bDAO.insert(review);
 	}
 
+	// 댓글입력
 	private void insertComment(int boardNum) {
 		// 로그인 확인
 		if (!checkLogin())
 			return;
-		
+
 		Comment comment = new Comment();
 		comment.setCommentMid(LoginControl.getLoginInof().getMemberId());
 		comment.setCommentBnum(boardNum);
@@ -132,7 +163,8 @@ public class ReviewManagement extends Management {
 		return sc.nextLine();
 	}
 
-	private boolean checkRealBuy(int productId) { // 상품 구매 이력 확인
+	// 상품 구매 이력 확인
+	private boolean checkRealBuy(int productId) {
 		String memberId = LoginControl.getLoginInof().getMemberId();
 
 		List<Order> list = oDAO.selectAll(memberId, productId);
@@ -143,24 +175,50 @@ public class ReviewManagement extends Management {
 		return true;
 	}
 
-	private void allReviewPrint() { // 후기 제목 출력
-		List<Board> list = bDAO.selectAll(1);
-		System.out.println("+++++++++++++++++++구매후기+++++++++++++++++++++\n");
+	//페이지 출력
+	protected void boardPagePrint(int totalPage, int currentPage) {
+		System.out.println("\n+++++++++++++++++++구매후기+++++++++++++++++++++\n");
+		//내용이 없는 경우
+		if (totalPage == 0) {
+			System.out.println(" 구매후기가 없습니다.");
+		}
+		//페이지의 목록 출력
+		List<Board> list = bDAO.selectAll(currentPage, 1);
 		for (Board board : list) {
-			String str = " "+board.getBoardNum() + " " +board.getStar() +" "
-			+ board.getBoardSubject() + " | 주문 :" + board.getProductName() ;
+			String str = " " + board.getBoardNum() + " " + board.getStar() 
+						+ " " + board.getBoardSubject() 
+						+ " | 주문 :"+ board.getProductName();
 			System.out.println(str);
 		}
-		System.out.println("\n+++++++++++++++++++++++++++++++++++++++++++++");
+		//페이지 블록 + 현재 페이지 프린트
+		System.out.print("\n [ ");
+		for (int i = 1; i <= totalPage; i++) {
+			System.out.print(i + " ");
+		}
+		System.out.println("] "+currentPage+"페이지");
+		System.out.println("+++++++++++++++++++++++++++++++++++++++++++++");
 	}
 
 
+
+//	private void allReviewPrint() { // 후기 제목 출력
+//		List<Board> list = bDAO.selectAll(1);
+//		System.out.println("+++++++++++++++++++구매후기+++++++++++++++++++++\n");
+//		for (Board board : list) {
+//			String str = " " + board.getBoardNum() + " " + board.getStar() + " " + board.getBoardSubject() + " | 주문 :"
+//					+ board.getProductName();
+//			System.out.println(str);
+//		}
+//		System.out.println("\n+++++++++++++++++++++++++++++++++++++++++++++");
+//	}
+
 	// 게시글 수정
 	protected void updateBoard(int boardNum) {
-		//로그인 상태 확인
-		if(!checkLogin()) return;
+		// 로그인 상태 확인
+		if (!checkLogin())
+			return;
 		// 작성자인지 확인
-		Board board = bDAO.selectOne(boardNum,1);
+		Board board = bDAO.selectOne(boardNum, 1);
 		if (!board.getBoardMId().equals(LoginControl.getLoginInof().getMemberId())) {
 			System.out.println("작성자만 수정 가능합니다.");
 			return;

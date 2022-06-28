@@ -5,6 +5,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import com.yedam.app.common.DAO;
+import com.yedam.app.product.Product;
 
 public class OrderDAO extends DAO{
 
@@ -22,8 +23,8 @@ public class OrderDAO extends DAO{
 		try {
 			connect();
 			String sql = "INSERT INTO orders "
-						+ "(product_id, deal_amount, orderer_id, shipment_date) " 
-						+ "VALUES (?, ?, ?, sysdate+5) "; 
+						+ "(order_num,product_id, deal_amount, orderer_id) " 
+						+ "VALUES (order_seq.nextval, ?, ?, ?) "; 
 																										// 입력안해도 무관
 			pstmt = conn.prepareStatement(sql);
 			pstmt.setInt(1, info.getProductId());
@@ -42,7 +43,61 @@ public class OrderDAO extends DAO{
 			disconnect();
 		}
 	}
+	// 수정 - 발송상태
+		public void update(int orderNum,int condition) {
+			try {
+				connect();
 
+				String sql = "UPDATE orders " 
+						+ "SET condition =? "
+						+ "WHERE order_num=?";
+				// 둘 다 값을 넣어야하기 때문에 바꾸지 않는다면 원래 값을 그대로 반환하도록 짤 것
+
+				pstmt = conn.prepareStatement(sql);
+				pstmt.setInt(1, condition);
+				pstmt.setInt(2, orderNum);
+			
+				int result = pstmt.executeUpdate();
+				if (result > 0) {
+					System.out.println(result + "건이 정상적으로 수정되었습니다.");
+				} else {
+					System.out.println("정상적으로 수정되지 않았습니다.");
+				}
+			} catch (SQLException e) {
+				e.printStackTrace();
+			} finally {
+				disconnect();
+			}
+		}
+
+	// 단건조회 - 주문번호
+	public Order selectOne(int orderNum) {
+		Order order = null;
+		try {
+			connect();
+			String sql = "SELECT * FROM orders "
+					+ "WHERE order_num="+orderNum;
+			stmt = conn.createStatement();
+			rs = stmt.executeQuery(sql);
+			if(rs.next()) {
+				order = new Order();
+				order.setOrderNum(rs.getInt("order_num"));
+				order.setDealDate(rs.getDate("deal_date"));
+				order.setOrdererId(rs.getString("orderer_id"));
+				order.setProductId(rs.getInt("product_id"));
+				order.setDealAmount(rs.getInt("deal_amount"));
+				order.setShipmentDate(rs.getDate("shipment_date"));
+				order.setCondition(rs.getInt("condition"));
+			}
+					
+		}catch(SQLException e) {
+			e.printStackTrace();
+		}finally {
+			disconnect();
+		}
+		return order;
+	}
+	
 	// 단건조회 - 상품 주문수량 확인
 	public int selectAmount(int productId) {
 		int amount = 0;
@@ -93,9 +148,9 @@ public class OrderDAO extends DAO{
 
 		try {
 			connect();
-			String sql = "SELECT o.deal_date, o.product_id" 
+			String sql = "SELECT o.order_num, o.deal_date, o.product_id" 
 							+ ", p.product_name, o.orderer_id, o.deal_amount"
-							+ ", o.shipment_date "
+							+ ", o.shipment_date, o.condition "
 						+ "FROM products p JOIN orders o " 
 						+ "ON p.product_id = o.product_id "
 						+ "ORDER BY o.deal_date";
@@ -103,43 +158,14 @@ public class OrderDAO extends DAO{
 			rs = pstmt.executeQuery();
 			while (rs.next()) {
 				Order info = new Order();
+				info.setOrderNum(rs.getInt("order_num"));
 				info.setDealDate(rs.getDate("deal_date"));
 				info.setProductId(rs.getInt("product_id"));
 				info.setProductName(rs.getString("product_name"));
 				info.setOrdererId(rs.getString("orderer_id"));
 				info.setDealAmount(rs.getInt("deal_amount"));
 				info.setShipmentDate(rs.getDate("shipment_date"));
-
-				list.add(info);
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-		} finally {
-			disconnect();
-		}
-		return list;
-	}
-
-	// 전체조회 - 해당 날짜에 출고된 내역
-	public List<Order> selectAll(Date dealDate) {
-		List<Order> list = new ArrayList<>();
-
-		try {
-			connect();
-			String sql = "SELECT t.deal_date, t.product_id" 
-							+ ", p.product_name, t.deal_amount "
-						+ "FROM products p JOIN orders t " 
-						+ "ON p.product_id = t.product_id "
-						+ "WHERE deal_date = ?";
-			pstmt = conn.prepareStatement(sql);
-			pstmt.setDate(1, dealDate);
-			rs = pstmt.executeQuery();
-			while (rs.next()) {
-				Order info = new Order();
-				info.setDealDate(rs.getDate("deal_date"));
-				info.setProductId(rs.getInt("product_id"));
-				info.setProductName(rs.getString("product_name"));
-				info.setDealAmount(rs.getInt("deal_amount"));
+				info.setCondition(rs.getInt("condition"));
 
 				list.add(info);
 			}
@@ -157,7 +183,7 @@ public class OrderDAO extends DAO{
 
 			try {
 				connect();
-				String sql = "SELECT o.deal_date, o.product_id" 
+				String sql = "SELECT o.order_num, o.deal_date, o.product_id" 
 								+ ", p.product_name, o.orderer_id, o.deal_amount"
 								+ ", o.shipment_date "
 							+ "FROM products p JOIN orders o " 
@@ -168,6 +194,7 @@ public class OrderDAO extends DAO{
 				rs = pstmt.executeQuery();
 				while (rs.next()) {
 					Order info = new Order();
+					info.setOrderNum(rs.getInt("order_num"));
 					info.setDealDate(rs.getDate("deal_date"));
 					info.setProductId(rs.getInt("product_id"));
 					info.setProductName(rs.getString("product_name"));
@@ -189,7 +216,7 @@ public class OrderDAO extends DAO{
 
 			try {
 				connect();
-				String sql = "SELECT o.deal_date, o.product_id, p.product_name" 
+				String sql = "SELECT o.order_num, o.deal_date, o.product_id, p.product_name" 
 							+ ", o.orderer_id, o.deal_amount, o.shipment_date "
 							+ "FROM products p JOIN orders o " 
 							+ "ON p.product_id = o.product_id "
@@ -201,6 +228,7 @@ public class OrderDAO extends DAO{
 				rs = pstmt.executeQuery();
 				while (rs.next()) {
 					Order info = new Order();
+					info.setOrderNum(rs.getInt("order_num"));
 					info.setDealDate(rs.getDate("deal_date"));
 					info.setProductId(rs.getInt("product_id"));
 					info.setProductName(rs.getString("product_name"));

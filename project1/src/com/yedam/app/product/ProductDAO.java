@@ -151,6 +151,43 @@ public class ProductDAO extends DAO {
 		return product;
 	}
 
+	// 전체조회 - 페이징
+		public List<Product> selectAll(int page) {
+			List<Product> list = new ArrayList<>();
+			int start = 1 + (page - 1) * 5; // 1, 6, 11, 16...
+			int end = 5 * page; // 5, 10, 15,...
+			
+			try {
+				connect();
+				String sql = "SELECT * FROM ("
+						+ "SELECT ROWNUM NUM, n.* FROM("
+						+ "SELECT * FROM products "
+						+ "WHERE product_id <>0 "
+						+ "ORDER BY product_id) n)" //0은 공지글의 참조키
+						+ "WHERE NUM BETWEEN ? AND ? ";
+				pstmt = conn.prepareStatement(sql);
+				pstmt.setInt(1, start);
+				pstmt.setInt(2, end);
+
+				rs = pstmt.executeQuery();
+				while (rs.next()) {
+					Product product = new Product();
+					product.setProductId(rs.getInt("product_id"));
+					product.setProductName(rs.getString("product_name"));
+					product.setProductPrice(rs.getInt("product_price"));
+					product.setProductExplain(rs.getString("product_explain"));
+
+					list.add(product);
+				}
+
+			} catch (SQLException e) {
+				e.printStackTrace();
+			} finally {
+				disconnect();
+			}
+
+			return list;
+		}
 	// 전체조회
 	public List<Product> selectAll() {
 		List<Product> list = new ArrayList<>();

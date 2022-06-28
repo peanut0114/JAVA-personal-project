@@ -32,7 +32,7 @@ public class LoginControl extends Management{
 					new SignUp();
 				}else if(menuNo==9) {
 					//종료
-					new Management().run();
+					break;
 				}else {
 					showInputError();
 				}

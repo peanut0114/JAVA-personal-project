@@ -80,8 +80,9 @@ public class Management {
 	protected boolean checkLogin() {
 		if (selectRole() == 2) { // 관리자0 회원1 비회원2
 			System.out.println("\n로그인 후 이용 가능합니다.");
-			System.out.print("로그인하시겠습니까? 1.네 2.아니오 > ");
-			int n = Integer.parseInt(sc.nextLine());
+			System.out.println("로그인하시겠습니까? 1.YES 2.NO");
+			int n = menuSelect();
+			while(n!=1 && n!=2) n=menuSelect(); //메뉴 외 무한루프
 			if (n == 1) {
 				new LoginControl();
 			}
@@ -129,5 +130,6 @@ public class Management {
 		}
 		return true;
 	}
+	
 
 }

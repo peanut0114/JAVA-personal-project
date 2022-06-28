@@ -2,56 +2,6 @@ package com.yedam.app.design;
 
 public class Q {
 /*
- <수제쿠키 전문점 - 상품 리뷰 게시판>
-1. 전체 상품 2. 공지사항 3. 마이페이지(로그인) 4.판매자 정보(단순출력)  9. 종료
- (리뷰- 아이디뜨게)
-
-1-1 상품목록 프린트 (번호+이름+가격) -> 9.홈
-1-2 상품선택시 상세설명(1.주문 2.후기 3.뒤로가기 9.홈) 
-	1-2-1. 주문 : 개수(나에게 주문: 시간남으면  타인 주소, 폰번호, 이름 입력받기)
-	1-2-2. 후기 출력 - 댓글 : 로그인한 사람 대상
-		1. 리뷰작성(회원,관리자) 2. 리뷰등록(회원, 구매이력확인) 3. 뒤로가기
-
-2. 공지게시판 : 관리자만 작성가능
-	
-3-1. 1.로그인 (로그인 상태일시 넘어감)
-        2. 회원가입(관리자0, 디폴트 회원1) : 아이디, 비번, 이름, 생년월일, 폰번호, 주소
-
-3-2. 관리자 : 1.상품관리(상품별 입출고내역) 2. 회원관리(주문조회, 회원정보 삭제)
-
-3-3. 회원 : 1. 회원정보조회 2. 회원정보수정 3. 주문내역확인	 9.홈
-	3-2-1. 이름, 아이디, 주소, 폰번호, 생일 쿠폰 유무 출력 (생일과 5일 차이동안 생성)
-	3-2-2. 주소, 폰번호 수정
-	3-2-3. 상품이름, 구매량, 주소, 폰번호, 배송예정일 출력
-
-4. 판매자 정보 : 회사위치 상호명.. 등 
-	1. 뒤로가기 9. 종료
-
-5. 시간남으면 쿠키 이야기 익명게시판 만들기
-
-TALBLE
-상품정보product (num, name, price, content)
-입고량receiving_goods(num, amount, orderer, date)
-출고량take_out_goods(num, amount, orderer, date, shipping_schedule(발송예정일))
-회원member(id, pwd, name, ordernum) 0:관리자, 1:회원
-게시판board(id, subject, content, category) 0:공지게시판, 1:후기게시판
-댓글comment(id, boardnum, content)
-
-PACKAGE
-app
-	main
-app.common
-	DAO, Manager, LoginControl
-app.deal
-	dealInfo, productStockManagement, RdceivingDAO, TakeOutDAO
-app.members
-	member, memberDAO
-app.product
-	product, prodcutDAO, productInfoManagement
-app.board
-	board, boardDAO, boardManagement
-app.comment
-	comment, commentDAO, commentManagement
 
  
  --------------------------
@@ -61,6 +11,30 @@ app.comment
  ->> 부모클래스에선 자식클래스의 메소드에 접근 불가 
  
  2. 로그인 저장 정보엔 비번/아이디만 담아둠 ->> selectOne으로 모든 값 받아올것
+ ------------------------------
  
+ 페이지네이션을 위한 숫자 리스트 생성기
+ *
+ * 사용 방법:
+ * 1. 인스턴스 생성: new Paging(Integer pagesPerBlock, Integer postsPerPage, Long totalPostCount)
+ *  - pagesPerBlock = 한 블럭당 들어갈 페이지 개수 (예: 5인 경우 한 블럭에 [1 2 3 4 5] 등으로 표시)
+ *  - postsPerPage = 페이지 하나 당 보여지는 Post(row)의 개수
+ *  - totalPostCount = 테이블에 등록된 총 Post 개수
+ *  - 위의 변수들은 setter/getter를 가지고 있습니다.
+ *
+ * 2. getTotalLastPageNum() 으로 총 페이지 개수를 확인합니다.
+ *
+ * 3. getFixedBlock(Integer currentPageNum) 또는 getElasticBlock(Integer currentPageNum)으로 페이지 리스트 생성합니다.
+ *  - currentNum = 현재 페이지
+ *  - 결과는 Map<String, Object> 형태로 반환되며, pageList키의 값이 페이지 리스트입니다.
+ *  - 예) {totalPostCount=5555, isPrevExist=false, isNextExist=true, blockLastPageNum=11, postsPerPage=12,
+ *        totalLastPageNum=462, currentPageNum=1, pagesPerBlock=11, pageList=[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11],
+ *        blockFirstPageNum=1}
+ *
+ * 4. getFixedBlock()은 현재 페이지 위치가 항상 고정되어 있으며, getElasticBlock()은 현재 페이지가 가능하면 블럭의 한가운데 위치하도록 합니다.
+ *  - 예) 현재페이지가 6이고 블럭당 페이지 수가 5인 경우 getFixedBlock()에서는 [6, 7, 8, 9, 10]로 표시되지만,
+ *       getElasticBlock()인 경우 [4, 5, 6, 7, 8]로 표시됩니다.
+ *  - getElasticBlock()은 pagesPerBlock이 홀수일 때에만 사용할 수 있습니다.
+ *
  */
 }

@@ -19,13 +19,14 @@ public class Table {
     * 주문 테이블
     
 	CREATE table orders(
+	order_num NUMBER constraint order_id_pk primary key,
     deal_date DATE DEFAULT sysdate,
     product_id NUMBER CONSTRAINT pro_fk_take_out
                       REFERENCES products(product_id),
     deal_amount NUMBER,
     orderer_id VARCHAR2(100) CONSTRAINT orderer_id_fk
                              REFERENCES members(member_id),
-    shipment_date DATE,
+    shipment_date DATE DEFAULT sysdate+4,
     condition number(1) default 0); --0이면 준비중, 1이면 배송완료
      
      
@@ -72,6 +73,20 @@ public class Table {
 	comment_date DATE default sysdate);
 	
 	
+	* 댓글 뷰
+	 
+	CREATE VIEW review_vu AS
+	SELECT * FROM (
+	SELECT ROWNUM NUM, N.* FROM( 
+	SELECT b.board_num, p.product_name, b.board_subject, 
+	        RPAD(SUBSTR('★★★★★',1,b.board_star),5,'☆') star, 
+	        b.board_m_id, b.board_content,b.board_date, b.board_category 
+	FROM products p JOIN board b 
+	ON (p.product_id = b.board_product)
+	WHERE board_category=1
+	ORDER BY b.board_num) N
+	);
+	
 	<SEQUENCE>
 	CREATE SEQUENCE product_seq 
 	increment by 1
@@ -80,6 +95,12 @@ public class Table {
 	nocycle;
 	
 	CREATE SEQUENCE board_seq 
+	increment by 1
+	START WITH 1
+	nocache
+	nocycle;
+	
+	CREATE SEQUENCE order_seq 
 	increment by 1
 	START WITH 1
 	nocache
