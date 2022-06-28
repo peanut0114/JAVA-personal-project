@@ -47,14 +47,13 @@ public class ProductDAO extends DAO {
 		}
 	}
 
-	// 수정 - 이름, 가격
+	// 수정 - 이름, 가격, 설명
 	public void updateInfo(Product product) {
 		try {
 			connect();
 
 			String sql = "UPDATE products " + "SET product_name=?, product_price=?, product_explain =? "
 					+ "WHERE product_id=?";
-			// 둘 다 값을 넣어야하기 때문에 바꾸지 않는다면 원래 값을 그대로 반환하도록 짤 것
 
 			pstmt = conn.prepareStatement(sql);
 			pstmt.setString(1, product.getProductName());

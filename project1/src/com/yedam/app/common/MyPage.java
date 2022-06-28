@@ -212,7 +212,7 @@ public class MyPage extends Management {
 
 	}
 	
-	//삭제
+	//상품삭제
 	private void deleteProduct() {
 		try {
 		System.out.print("제품 번호 선택 > ");
