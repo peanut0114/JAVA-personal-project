@@ -17,7 +17,7 @@ public class ReviewManagement extends Management {
 			int menuNo = 0;
 			// 후기출력
 			boardPagePrint(currentPage,totalPage);
-			// 1.후기자세히보기 2.후기등록 9.뒤로가기
+			// 1.이전페이지 2.다음페이지 3.자세히보기 4.등록  9.뒤로가기
 			menuPrint();
 			menuNo = menuSelect();
 
@@ -40,8 +40,6 @@ public class ReviewManagement extends Management {
 				// 후기등록
 				isertReview();
 			} else if (menuNo == 9) {
-				// 후기선택
-				reviewPrint();
 				// 뒤로가기
 				break;
 			} else {
@@ -113,17 +111,20 @@ public class ReviewManagement extends Management {
 		// 로그인 확인
 		if (!checkLogin())
 			return;
-		// 구매내역 출력
-		List<Order> list = oDAO.selectAll(LoginControl.getLoginInof().getMemberId());
-		if (oDAO.selectAmount(LoginControl.getLoginInof().getMemberId()) == 0) {
+		// 구매내역 확인
+		String id = LoginControl.getLoginInof().getMemberId();
+		if (oDAO.selectAmount(id) == 0) {
 			System.out.println("구매 내역이 없습니다.");
 			return;
 		}
+		//구매내역 출력
+		System.out.println("구매 내역이 있는 제품 : ");
+		List<Order> list = oDAO.selectAll(id);
 		for (Order info : list) {
-			System.out.println(info.getProductId() + "." + info.getProductName() + " ");
+			System.out.println(info.getDealDate()+" "+ info.getProductId() + "." + info.getProductName() + " ");
 		}
 		// 쿠키 번호 선택
-		System.out.printf("후기를 작성할 쿠키 번호 ");
+		System.out.printf("\n후기를 작성할 쿠키 번호 ");
 		int productNo = menuSelect();
 		// 구매여부 확인
 		if (!checkRealBuy(productNo))
@@ -159,7 +160,7 @@ public class ReviewManagement extends Management {
 	}
 
 	private String writeReview() {
-		System.out.println("내용 > ");
+		System.out.print("내용 > ");
 		return sc.nextLine();
 	}
 
@@ -176,7 +177,7 @@ public class ReviewManagement extends Management {
 	}
 
 	//페이지 출력
-	protected void boardPagePrint(int totalPage, int currentPage) {
+	protected void boardPagePrint(int currentPage, int totalPage) {
 		System.out.println("\n+++++++++++++++++++구매후기+++++++++++++++++++++\n");
 		//내용이 없는 경우
 		if (totalPage == 0) {
@@ -199,18 +200,6 @@ public class ReviewManagement extends Management {
 		System.out.println("+++++++++++++++++++++++++++++++++++++++++++++");
 	}
 
-
-
-//	private void allReviewPrint() { // 후기 제목 출력
-//		List<Board> list = bDAO.selectAll(1);
-//		System.out.println("+++++++++++++++++++구매후기+++++++++++++++++++++\n");
-//		for (Board board : list) {
-//			String str = " " + board.getBoardNum() + " " + board.getStar() + " " + board.getBoardSubject() + " | 주문 :"
-//					+ board.getProductName();
-//			System.out.println(str);
-//		}
-//		System.out.println("\n+++++++++++++++++++++++++++++++++++++++++++++");
-//	}
 
 	// 게시글 수정
 	protected void updateBoard(int boardNum) {

@@ -185,6 +185,7 @@ public class BoardDAO extends DAO {
 	}
 
 	// 게시판별 전체조회- 페이징
+	
 	public List<Board> selectAll(int page, int category) {
 		List<Board> list = new ArrayList<>();
 		int start = 1 + (page - 1) * 5; // 1, 6, 11, 16...
@@ -200,7 +201,7 @@ public class BoardDAO extends DAO {
 					+ "FROM products p JOIN board b "
 					+ "ON (p.product_id = b.board_product) "
 					+ "WHERE board_category= ? "
-					+ "ORDER BY b.board_num) N ) "
+					+ "ORDER BY b.board_num DESC) N ) "
 					+ "WHERE NUM BETWEEN ? AND ? ";
 			pstmt = conn.prepareStatement(sql);
 			pstmt.setInt(1, category);

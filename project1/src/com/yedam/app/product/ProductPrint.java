@@ -24,25 +24,28 @@ public class ProductPrint extends Management {
 			menuNo = menuSelect();
 
 			if (menuNo == 1) {
-				if(currentPage==1) {
+				if (currentPage == 1) {
 					System.out.println("첫번째 페이지입니다.");
-				}else {
+				} else {
 					currentPage--;
 				}
 			} else if (menuNo == 2) {
-				if(currentPage==totalPage) {
+				if (currentPage == totalPage) {
 					System.out.println("마지막 페이지입니다.");
-				}else {
+				} else {
 					currentPage++;
 				}
 			} else if (menuNo == 3) {
-				// 주문 - 성공시 홈으로
-				if (orderCookie()) {
-					break;
-				}
-			} else if (menuNo == 4) {
 				// 후기
 				new ReviewManagement();
+			} else if (menuNo == 4) {
+				if (selectRole() != 0) {
+					// 주문 - 성공시 홈으로
+					if (orderCookie()) {
+						break;
+					}
+				} else
+					showInputError();
 			} else if (menuNo == 9) {
 				// 뒤로가기
 				break;
@@ -55,10 +58,15 @@ public class ProductPrint extends Management {
 
 	@Override
 	protected void menuPrint() {
-		System.out.println(" 1.이전페이지 2.다음페이지 3.주문 4.후기 9.홈");
+		if (selectRole() == 0) {
+			System.out.println(" 1.이전페이지 2.다음페이지 3.후기 9.홈");
+		}else {
+			System.out.println(" 1.이전페이지 2.다음페이지 3.후기 4.주문 9.홈");
+		}
 		System.out.println("------------------------------------");
 	}
 
+	// 상품 주문
 	private boolean orderCookie() {
 		// 로그인 확인
 		if (!checkLogin())
@@ -80,7 +88,7 @@ public class ProductPrint extends Management {
 		}
 
 		info.setOrdererId(LoginControl.getLoginInof().getMemberId());
-
+		info.setOrderPrice(info.getDealAmount() * product.getProductPrice());
 		// order table에 등록
 		oDAO.insert(info);
 
@@ -96,12 +104,12 @@ public class ProductPrint extends Management {
 		System.out.println("주문자명 : " + member.getMemberName());
 		System.out.println("주문 제품 : " + product.getProductName());
 		System.out.println("수량 : " + info.getDealAmount() + "개");
-		System.out.println("금액 : " + info.getDealAmount() * product.getProductPrice() + "원");
+		System.out.println("금액 : " + info.getOrderPrice() + "원");
 		System.out.println("\n★주문 완료되었습니다.★");
 	}
-	
+
 	// 거래수량 입력
-	private Order inputAmount() { 
+	private Order inputAmount() {
 
 		Order info = new Order();
 		System.out.println("\n<주문창>");
@@ -133,7 +141,7 @@ public class ProductPrint extends Management {
 		List<Product> list = pDAO.selectAll(currentPage);
 
 		for (Product info : list) {
-			System.out.println(" " + info+"\n");
+			System.out.println(" " + info + "\n");
 		}
 		// 페이지 블록 + 현재 페이지 프린트
 		System.out.print(" [ ");
@@ -145,5 +153,4 @@ public class ProductPrint extends Management {
 
 	}
 
-	
 }

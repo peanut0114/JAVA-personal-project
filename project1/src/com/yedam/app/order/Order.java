@@ -14,6 +14,7 @@ public class Order {
 	private int productId;
 	private int dealAmount;
 	private String ordererId;
+	private int orderPrice;
 	private Date shipmentDate;
 	private int condition; // 0 :발송준비중, 1:발송완료
 	private String productName;
@@ -29,7 +30,8 @@ public class Order {
 		return orderNum+" "+dealDate + "  " + productId + "." + productName
 				+ "(" + dealAmount+"개)" 
 				+ " 상태:"+con
-				+ "\n └ 발송예정일 : "+ shipmentDate;
+				+ "\n   └ 결제 금액 : "+ orderPrice +"원"
+				+ "\n   └ 발송예정일 : "+ shipmentDate;
 		
 	}
 }

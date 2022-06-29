@@ -42,9 +42,9 @@ public class LoginControl extends Management{
 		//메소드
 		@Override
 		protected void menuPrint() {
-			System.out.println("\n**********************");
+			System.out.println("\n**************************");
 			System.out.println(" 1.로그인 2.회원가입 9.홈");	//로그인 하지 않고 이용하는 서비스 있을시 여기 추가
-			System.out.println("**********************");
+			System.out.println("**************************");
 		}
 		
 		//로그인
@@ -58,12 +58,12 @@ public class LoginControl extends Management{
 				System.out.println();
 				return;
 			}
-			System.out.println("･✧ 로그인 성공 ✧･");
+			System.out.println("♥ 로그인 성공 ♥");
 		}
 		//로그아웃
 		static void logout() {
 			loginInfo=null;
-			System.out.println("･✧ 로그아웃 ✧･");
+			System.out.println("♡ 로그아웃 ♡");
 		}
 
 		private Member inputMember() {

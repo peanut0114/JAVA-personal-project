@@ -30,7 +30,7 @@ public class Board {
 					+"\n   내용 : " + boardContent;
 		} else {
 			str = boardNum + ". " + boardSubject+"\t"+boardDate
-					+ "\n   내용 : " + boardContent;
+					+ "\n\n  " + boardContent;
 		}
 		return str;
 	}

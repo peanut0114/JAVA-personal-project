@@ -149,6 +149,8 @@ public class ProductDAO extends DAO {
 		return product;
 	}
 
+	
+
 	// 전체조회 - 페이징
 	public List<Product> selectAll(int page) {
 		List<Product> list = new ArrayList<>();
@@ -190,7 +192,9 @@ public class ProductDAO extends DAO {
 
 		try {
 			connect();
-			String sql = "SELECT * FROM products " + " WHERE product_id <> 0" + " ORDER BY product_id"; // 0은 공지글의 참조키
+			String sql = "SELECT * FROM products " 
+					+ " WHERE product_id <> 0" 
+					+ " ORDER BY product_id"; // 0은 공지글의 참조키
 			stmt = conn.createStatement();
 
 			rs = stmt.executeQuery(sql);
@@ -218,7 +222,7 @@ public class ProductDAO extends DAO {
 		int count = 0;
 		try {
 			connect();
-			String sql = "SELECT COUNT(*) c FROM products " + "WHERE product_id <>0";
+			String sql = "SELECT COUNT(*) c FROM products WHERE product_id <>0";
 			stmt = conn.createStatement();
 
 			rs = stmt.executeQuery(sql);
